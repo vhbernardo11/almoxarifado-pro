@@ -1484,6 +1484,14 @@
             reader.onload = function(event) {
                 try {
                     const dados = JSON.parse(event.target.result);
+                                    // Tratar formato especial: [ {}, "produtos", ":", [...] ]
+                                    if (Array.isArray(dados) && dados.length > 3 && dados[1] === 'produtos' && dados[2] === ':' && Array.isArray(dados[3])) {
+                                                            dados = dados[3];
+                                                        }
+                                    // Tratar formato: { "produtos": [...] }
+                                    if (dados && typeof dados === 'object' && !Array.isArray(dados) && dados.produtos && Array.isArray(dados.produtos)) {
+                                                            dados = dados.produtos;
+                                                        }
                     if(Array.isArray(dados) && dados.length > 0) {
                                         dados = dados.map(p => {
                                             // Mapear nova estrutura JSON para estrutura interna
