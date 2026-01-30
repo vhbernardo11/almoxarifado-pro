@@ -28,22 +28,21 @@
     }
     .sidebar-header{
       background:linear-gradient(135deg,var(--primary) 0%,var(--secondary) 100%);
-      color:var(--bg-dark);padding:16px;text-align:center;font-weight:800;
+      color:var(--bg-dark);padding:16px;text-align:center;font-weight:1000;
       font-size:1.02em;border-bottom:1px solid var(--border);
     }
     .sidebar-nav{flex:1;overflow-y:auto}
     .nav-item{
       padding:14px 16px;cursor:pointer;border-left:3px solid transparent;
-      transition:all .2s ease;color:var(--text-secondary);font-weight:600;font-size:.95em;
-      display:flex;align-items:center;gap:10px;
-      user-select:none;
+      transition:all .2s ease;color:var(--text-secondary);font-weight:900;font-size:.95em;
+      display:flex;align-items:center;gap:10px;user-select:none;
     }
     .nav-item:hover{background:var(--bg-hover);color:var(--primary);border-left-color:var(--primary);transform:translateX(4px)}
     .nav-item.active{background:var(--bg-hover);color:var(--primary);border-left-color:var(--primary)}
     .sidebar-actions{padding:12px;border-top:1px solid var(--border);display:grid;gap:8px}
     .action-btn{
       width:100%;padding:10px;background:var(--bg-hover);border:1px solid var(--border);
-      border-radius:10px;color:var(--text-primary);cursor:pointer;font-weight:800;font-size:.85em;
+      border-radius:12px;color:var(--text-primary);cursor:pointer;font-weight:1000;font-size:.86em;
       transition:all .2s ease;display:flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;
     }
     .action-btn:hover{background:var(--primary);color:var(--bg-dark);border-color:var(--primary)}
@@ -55,24 +54,20 @@
       color:var(--bg-dark);padding:16px 18px;box-shadow:0 8px 25px rgba(0,0,0,.4);
       display:flex;flex-direction:column;gap:12px;
     }
-    .header-top{
-      display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;
-    }
+    .header-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
     .header-left{flex:1;min-width:250px}
-    .header-title{font-size:1.55em;font-weight:900;margin:0 0 6px 0}
+    .header-title{font-size:1.55em;font-weight:1000;margin:0 0 6px 0}
     .header-stats{display:flex;gap:10px;flex-wrap:wrap}
     .stat-item{
       display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.15);
-      padding:7px 12px;border-radius:10px;font-weight:800;font-size:.92em;
+      padding:7px 12px;border-radius:999px;font-weight:1000;font-size:.92em;
     }
-    .stat-value{font-size:1.15em;font-weight:900}
-    .top-actions{
-      display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:flex-end;
-    }
+    .stat-value{font-size:1.15em;font-weight:1000}
+    .top-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:flex-end}
     .btn-top{
       padding:10px 14px;background:rgba(255,255,255,.18);color:white;
       border:2px solid rgba(255,255,255,.35);border-radius:12px;cursor:pointer;
-      font-weight:900;font-size:.85em;transition:all .2s ease;display:flex;align-items:center;gap:8px;
+      font-weight:1000;font-size:.85em;transition:all .2s ease;display:flex;align-items:center;gap:8px;
       user-select:none;
     }
     .btn-top:hover{background:rgba(255,255,255,.28);border-color:white;transform:translateY(-1px)}
@@ -83,16 +78,16 @@
       padding:12px;display:grid;grid-template-columns:1fr;gap:10px;
     }
     .filtro-group{display:flex;flex-direction:column;gap:5px}
-    .filtro-label{font-size:.72em;color:var(--text-secondary);font-weight:900;text-transform:uppercase;letter-spacing:.5px}
+    .filtro-label{font-size:.72em;color:var(--text-secondary);font-weight:1000;text-transform:uppercase;letter-spacing:.5px}
     input[type="search"],select{
       padding:11px;background:var(--bg-hover);border:1px solid var(--border);
-      border-radius:10px;color:var(--text-primary);font-size:1em;font-family:inherit;
+      border-radius:12px;color:var(--text-primary);font-size:1em;font-family:inherit;
       transition:all .2s ease;
     }
     input[type="search"]:focus,select:focus{outline:none;border-color:var(--primary);box-shadow:0 0 10px rgba(0,212,255,.18)}
     .btn-filtro{
       padding:11px;background:var(--bg-hover);border:1px solid var(--border);
-      border-radius:10px;color:var(--text-secondary);cursor:pointer;font-weight:900;font-size:.85em;
+      border-radius:12px;color:var(--text-secondary);cursor:pointer;font-weight:1000;font-size:.85em;
     }
     .btn-filtro:hover{background:var(--danger);border-color:var(--danger);color:white}
 
@@ -107,17 +102,17 @@
     .produto-card:hover{background:var(--bg-hover);border-color:var(--primary);box-shadow:0 6px 18px rgba(0,212,255,.15)}
     .card-header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}
     .card-codigo{display:flex;flex-direction:column;gap:4px}
-    .codigo-principal{font-size:1.05em;font-weight:900;color:var(--primary)}
+    .codigo-principal{font-size:1.05em;font-weight:1000;color:var(--primary)}
     .codigo-secundario{font-size:.85em;color:var(--text-secondary)}
-    .card-badge{display:inline-block;padding:6px 10px;background:var(--secondary);color:white;border-radius:10px;font-size:.75em;font-weight:900;white-space:nowrap}
-    .card-titulo{font-size:1em;font-weight:800;color:var(--text-primary);margin-bottom:10px;line-height:1.35}
+    .card-badge{display:inline-block;padding:6px 10px;background:var(--secondary);color:white;border-radius:999px;font-size:.75em;font-weight:1000;white-space:nowrap}
+    .card-titulo{font-size:1em;font-weight:900;color:var(--text-primary);margin-bottom:10px;line-height:1.35}
     .card-info{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px}
-    .info-item{display:flex;flex-direction:column;gap:4px;padding:10px;background:var(--bg-hover);border-radius:12px}
-    .info-label{font-size:.74em;color:var(--text-secondary);text-transform:uppercase;font-weight:900}
-    .info-value{font-size:1.05em;font-weight:900;color:var(--primary)}
+    .info-item{display:flex;flex-direction:column;gap:4px;padding:10px;background:var(--bg-hover);border-radius:14px}
+    .info-label{font-size:.74em;color:var(--text-secondary);text-transform:uppercase;font-weight:1000}
+    .info-value{font-size:1.05em;font-weight:1000;color:var(--primary)}
     .card-footer{display:flex;justify-content:space-between;align-items:center;gap:8px;padding-top:10px;border-top:1px solid var(--border)}
-    .preco{font-size:1em;font-weight:900;color:var(--success)}
-    .status-badge{padding:6px 12px;border-radius:10px;font-size:.82em;font-weight:900}
+    .preco{font-size:1em;font-weight:1000;color:var(--success)}
+    .status-badge{padding:6px 12px;border-radius:999px;font-size:.82em;font-weight:1000}
     .status-ok{background:rgba(16,185,129,.18);color:var(--success)}
     .status-baixo{background:rgba(245,158,11,.18);color:var(--warning)}
     .status-vazio{background:rgba(239,68,68,.18);color:var(--danger)}
@@ -132,7 +127,7 @@
     @keyframes fadeIn{from{opacity:0}to{opacity:1}}
     .modal-box{
       background:var(--bg-card);border-radius:18px;border:2px solid var(--primary);
-      width:100%;max-width:860px;max-height:92vh;overflow:hidden;
+      width:100%;max-width:980px;max-height:92vh;overflow:hidden;
       display:flex;flex-direction:column;animation:slideUp .2s ease;
       box-shadow:0 20px 60px rgba(0,0,0,.55);
     }
@@ -153,7 +148,7 @@
 
     .form-group{margin-bottom:12px}
     .form-label{
-      display:block;font-weight:900;font-size:.78em;color:var(--text-primary);
+      display:block;font-weight:1000;font-size:.78em;color:var(--text-primary);
       text-transform:uppercase;margin-bottom:6px;letter-spacing:.5px
     }
     .form-input,.form-select,.form-textarea{
@@ -182,7 +177,7 @@
     .toast{
       position:fixed;bottom:-120px;right:12px;min-width:280px;background:var(--success);color:white;
       padding:12px 16px;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,.3);z-index:9999;
-      transition:bottom .25s ease;font-weight:900;font-size:.9em;
+      transition:bottom .25s ease;font-weight:1000;font-size:.9em;
     }
     .toast.show{bottom:18px}
     .toast.erro{background:var(--danger)}
@@ -199,7 +194,7 @@
     .rel-table tbody tr:last-child td{border-bottom:none}
     .rel-table tbody tr:hover{background:var(--bg-card)}
 
-    /* ===== REPORT PAGES (pagination bottom-right) ===== */
+    /* ===== REPORT PAGES (paginação canto inferior direito) ===== */
     .report-pages{display:flex;flex-direction:column;gap:12px}
     .report-page{
       background:var(--bg-hover);
@@ -235,7 +230,181 @@
       border:1px solid rgba(255,255,255,.08);
       color:var(--text-primary);
     }
+    .cards-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px}
+    .kpi-card{
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:14px;
+      padding:12px;
+      cursor:pointer;
+      transition:all .2s ease;
+      position:relative;
+      overflow:hidden;
+    }
+    .kpi-card:hover{transform:translateY(-2px);border-color:rgba(0,212,255,.35);box-shadow:0 10px 24px rgba(0,212,255,.10)}
+    .kpi-title{font-weight:1000;color:var(--text-primary);margin-bottom:6px}
+    .kpi-value{font-size:2.05em;font-weight:1000;color:var(--primary);line-height:1.1}
+    .kpi-sub{color:var(--text-secondary);font-size:.9em;font-weight:900}
+    .kpi-pill{
+      position:absolute;right:10px;bottom:10px;
+      font-weight:1000;font-size:.82em;
+      background:rgba(0,0,0,.25);
+      padding:5px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.08);
+      color:var(--text-secondary);
+    }
 
+    @media print{
+      .sidebar,.header,.btn,.modal-close,.modal-footer{display:none!important}
+      .container{margin-left:0}
+      .modal-box{max-width:100%;border:none;box-shadow:none}
+      .modal-header{border-radius:0}
+      .modal-overlay{background:#fff}
+      .report-page{page-break-after:always}
+      .page-number{border:1px solid #999;color:#333;background:#eee}
+    }
+
+    @media (max-width:1024px){
+      .app{grid-template-columns:1fr}
+      .sidebar{
+        width:100%;height:auto;position:relative;border-right:none;border-bottom:1px solid var(--border);
+        flex-direction:row;
+      }
+      .sidebar-nav{display:flex;overflow-x:auto;flex:1}
+      .nav-item{border-left:none;border-bottom:3px solid transparent;white-space:nowrap}
+      .container{margin-left:0}
+      .form-row{grid-template-columns:1fr}
+      .cards-grid{grid-template-columns:1fr}
+    }
+    ::-webkit-scrollbar{width:6px}
+    ::-webkit-scrollbar-track{background:var(--bg-hover)}
+    ::-webkit-scrollbar-thumb{background:var(--primary);border-radius:3px}
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-header">📦 ALMOX2026</div>
+      <div class="sidebar-nav">
+        <div class="nav-item active" data-sec="estoque" onclick="mudarSecao('estoque', this)">📦 Estoque</div>
+        <div class="nav-item" data-sec="relatorio" onclick="mudarSecao('relatorio', this)">📊 Relatórios</div>
+        <div class="nav-item" data-sec="mov" onclick="abrirMovimentacoes()">🔁 Movimentações</div>
+        <div class="nav-item" data-sec="config" onclick="mudarSecao('config', this)">⚙️ Config</div>
+      </div>
+      <div class="sidebar-actions">
+        <button class="action-btn" onclick="abrirModalDados()">💾 Dados</button>
+        <button class="action-btn" onclick="abrirMovimentacoes()">🔁 Movimentações</button>
+      </div>
+    </div>
+
+    <!-- CONTAINER -->
+    <div class="container">
+      <!-- HEADER -->
+      <div class="header">
+        <div class="header-top">
+          <div class="header-left">
+            <div class="header-title" id="titulo">📦 ESTOQUE</div>
+            <div class="header-stats">
+              <div class="stat-item"><span>Total itens:</span><span class="stat-value" id="statTotal">0</span></div>
+              <div class="stat-item" style="background: rgba(16, 185, 129, 0.18);">
+                <span>✅ OK:</span><span class="stat-value" id="statOk" style="color: var(--success);">0</span>
+              </div>
+              <div class="stat-item" style="background: rgba(245, 158, 11, 0.18);">
+                <span>⚠️ Baixo:</span><span class="stat-value" id="statBaixo" style="color: var(--warning);">0</span>
+              </div>
+              <div class="stat-item" style="background: rgba(239, 68, 68, 0.18);">
+                <span>❌ Zerado:</span><span class="stat-value" id="statVazio" style="color: var(--danger);">0</span>
+              </div>
+              <div class="stat-item" style="background: rgba(124, 58, 237, 0.18);">
+                <span>📦 Qtd total:</span><span class="stat-value" id="statQtdTotal" style="color: white;">0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- TOP BUTTONS -->
+          <div class="top-actions">
+            <button id="btnTopDados" class="btn-top" onclick="abrirModalDados()">💾 DADOS</button>
+            <button id="btnTopRel" class="btn-top" onclick="mudarSecao('relatorio')">📊 RELATÓRIOS</button>
+            <button id="btnTopEst" class="btn-top active" onclick="mudarSecao('estoque')">📦 ESTOQUE</button>
+            <button id="btnTopMov" class="btn-top" onclick="abrirMovimentacoes()">🔁 MOVIMENTAÇÕES</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEÇÃO ESTOQUE -->
+      <div id="secEstoque" class="section" style="display:flex; flex-direction:column; flex:1;">
+        <div class="filtros">
+          <div class="filtro-group">
+            <label class="filtro-label">🔍 Buscar</label>
+            <input type="search" id="busca" placeholder="Nome, código..." onkeyup="filtrar()" />
+          </div>
+          <div class="filtro-group">
+            <label class="filtro-label">📂 Classificação</label>
+            <select id="setor" onchange="filtrar()">
+              <option value="">Todos</option>
+            </select>
+          </div>
+          <div class="filtro-group">
+            <label class="filtro-label">⚠️ Status</label>
+            <select id="status" onchange="filtrar()">
+              <option value="">Todos</option>
+              <option value="ok">✅ OK</option>
+              <option value="baixo">⚠️ Baixo</option>
+              <option value="vazio">❌ Zerado</option>
+            </select>
+          </div>
+          <button class="btn-filtro" onclick="limparFiltros()" style="width:100%;">🔄 Limpar</button>
+        </div>
+
+        <div class="content">
+          <div class="produtos-grid" id="gridProdutos">
+            <div style="text-align:center; color: var(--text-secondary); padding:20px;">Carregando...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SEÇÃO RELATÓRIOS -->
+      <div id="secRelatorio" class="section" style="display:none; flex:1; overflow-y:auto;">
+        <div class="content">
+          <h2 style="color: var(--primary); margin-bottom: 12px; font-size: 1.55em; font-weight:1000;">📊 RELATÓRIOS</h2>
+
+          <div class="mini-badges">
+            <span class="mini-badge">📌 Clique nos cards para abrir detalhes</span>
+            <span class="mini-badge">🖨️ Imprimível com paginação</span>
+            <span class="mini-badge">🔁 Inclui movimentações e saldos por setor</span>
+          </div>
+
+          <div class="cards-grid">
+            <div class="kpi-card" onclick="abrirModalRelatorio('todos')">
+              <div class="kpi-title">📦 Itens cadastrados</div>
+              <div class="kpi-value" id="kpiItens">0</div>
+              <div class="kpi-sub">Listagem completa</div>
+              <div class="kpi-pill">Abrir</div>
+            </div>
+
+            <div class="kpi-card" onclick="abrirModalRelatorio('total_estoque')">
+              <div class="kpi-title">📦 Total do estoque (Qtd)</div>
+              <div class="kpi-value" id="kpiQtdTotal">0</div>
+              <div class="kpi-sub">Soma das quantidades no ALMOXARIFADO</div>
+              <div class="kpi-pill">Abrir</div>
+            </div>
+
+            <div class="kpi-card" onclick="abrirModalRelatorio('baixo')">
+              <div class="kpi-title">⚠️ Estoque baixo</div>
+              <div class="kpi-value" id="kpiBaixo">0</div>
+              <div class="kpi-sub">Abaixo do mínimo (mas > 0)</div>
+              <div class="kpi-pill">Abrir</div>
+            </div>
+
+            <div class="kpi-card" onclick="abrirModalRelatorio('zerado')">
+              <div class="kpi-title">❌ Estoque zerado</div>
+              <div class="kpi-value" id="kpiZerado">0</div>
+              <div class="kpi-sub">Itens com quantidade 0</div>
+              <div class="kpi-pill">Abrir</div>
+            </div>
+
+       
     @media print{
       .sidebar,.header,.btn,.modal-close,.modal-footer{display:none!important}
       .container{margin-left:0}
