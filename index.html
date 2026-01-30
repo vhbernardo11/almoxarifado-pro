@@ -1064,6 +1064,38 @@
         });
 
         function carregarDados() {
+                // Tentar carregar produtos.json se não houver dados no localStorage
+                const dados = localStorage.getItem('produtosAlmox');
+                if (!dados) {
+                            // Carregar produtos.json
+                fetch('./produtos.json')
+                    .then(response => response.json())
+                                .then(data => {
+                                                    if (data.produtos && Array.isArray(data.produtos)) {
+                                                                            produtos = data.produtos.map(p => ({
+                                                                                                        codigo1: p.id || p.codigo1 || 'NULL',
+                                                                                                        codigo2: p.sku || p.codigo2 || '',
+                                                                                                        nome: p.nome || '',
+                                                                                                        estoqueAtual: p.estoque_atual !== undefined ? p.estoque_atual : (p.estoqueAtual || 0),
+                                                                                                        estoqueMin: p.estoque_minimo !== undefined ? p.estoque_minimo : (p.estoqueMin || 0),
+                                                                                                        preco: p.preco_custo !== undefined ? p.preco_custo : (p.preco || 0),
+                                                                                                        setor: p.categoria || p.setor || 'CONSUMO'
+                                                                                                                                }));
+                                                                            salvarDados();
+                                                                            filtrar();
+                                                                            atualizarStats();
+                                                                            exibirToast('✅ Produtos carregados do arquivo!');
+                                                                        }
+                                                })
+                                .catch(err => {
+                                                    console.error('Erro ao carregar produtos.json:', err);
+                                                    produtos = dadosIniciais;
+                                                    salvarDados();
+                                                });
+                            return;
+                        }
+
+                // Carregar do localStorage se existir
             const dados = localStorage.getItem('produtosAlmox');
             if (dados) {
                 try {
@@ -1485,8 +1517,7 @@
                 try {
                     const dados = JSON.parse(event.target.result);
                                     // Tratar formato especial: [ {}, "produtos", ":", [...] ]
-                                    if (Array.isArray(dados) && dados.length > 3 && dados[1] === 'produtos' && dados[2] === ':' && Array.isArray(dados[3])) {
-                                                            dados = dados[3];
+                        if (Array.isArray(dados) && dados.length >= 4 && dados[1] === 'produtos' && String(dados[2]).trim() === ':' && Array.isArray(dados[3])) {                                                            dados = dados[3];
                                                         }
                                     // Tratar formato: { "produtos": [...] }
                                     if (dados && typeof dados === 'object' && !Array.isArray(dados) && dados.produtos && Array.isArray(dados.produtos)) {
