@@ -242,15 +242,12 @@
     <!-- SIDEBAR -->
     <div class="sidebar">
       <div class="sidebar-header">📦 ALMOX2026</div>
-
       <div class="sidebar-nav">
-        <!-- Mudança 1: onde aparecia "Estoque", agora é "ALMOX2026" -->
-        <div class="nav-item active" onclick="mudarSecao('estoque', this)">🏷️ ALMOX2026</div>
+        <div class="nav-item active" onclick="mudarSecao('estoque', this)">📦 ALMOX2026</div>
         <div class="nav-item" onclick="mudarSecao('relatorio', this)">📊 Relatórios</div>
         <div class="nav-item" onclick="abrirModalDados()">💾 Dados</div>
         <div class="nav-item" onclick="mudarSecao('config', this)">⚙️ Config</div>
       </div>
-
       <div class="sidebar-actions">
         <button class="action-btn" onclick="abrirModalDados()">💾 Dados</button>
         <button class="action-btn" onclick="mudarSecao('relatorio', document.querySelector('.sidebar-nav .nav-item:nth-child(2)'))">📊 Relatórios</button>
@@ -262,9 +259,7 @@
       <!-- HEADER -->
       <div class="header">
         <div class="header-left">
-          <!-- Mudança 1: título do header -->
-          <div class="header-title" id="titulo">🏷️ ALMOX2026</div>
-
+          <div class="header-title" id="titulo">📦 ALMOX2026</div>
           <div class="header-stats">
             <div class="stat-item"><span>Total:</span><span class="stat-value" id="statTotal">0</span></div>
             <div class="stat-item" style="background: rgba(16, 185, 129, 0.2);">
@@ -284,7 +279,7 @@
         </div>
       </div>
 
-      <!-- SEÇÃO PRINCIPAL (mantém id secEstoque, mas o nome exibido é ALMOX2026) -->
+      <!-- SEÇÃO "ALMOX2026" (antes Estoque) -->
       <div id="secEstoque" class="section" style="display:flex; flex-direction:column; flex:1;">
         <div class="filtros">
           <div class="filtro-group">
@@ -435,27 +430,21 @@
       </div>
       <div class="modal-body">
         <p style="color: var(--text-secondary); margin-bottom: 12px; font-size: 0.9em;">Gerencie seus dados:</p>
-
         <div style="display:grid; grid-template-columns: 1fr; gap: 8px; margin-bottom: 16px;">
           <button class="btn btn-primary" onclick="document.getElementById('fileInput').click()">📥 Importar JSON</button>
-
-          <!-- Mudança 2: botão para "salvar o arquivo .json" dentro do sistema -->
-          <button class="btn btn-primary" onclick="salvarArquivoJSON()">💾 Salvar arquivo .JSON (do sistema)</button>
-
           <button class="btn btn-primary" onclick="exportarJSON()">📤 Exportar JSON</button>
+
+          <!-- ✅ NOVO: SALVAR JSON (BAIXAR ATUALIZADO) -->
+          <button class="btn btn-primary" onclick="salvarArquivoJSON()" style="background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);">
+            💾 Salvar arquivo .JSON
+          </button>
+
           <button class="btn btn-primary" onclick="exportarCSV()" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">📊 Exportar CSV</button>
         </div>
-
         <input type="file" id="fileInput" accept=".json" style="display:none;" onchange="importarJSON(event)">
 
         <div style="margin-top:10px; color: var(--text-secondary); font-size:.85em;">
-          <strong>Dica:</strong> no GitHub Pages o botão <em>Salvar arquivo .JSON</em> consegue manter um “arquivo escolhido”
-          durante a sessão (navegadores compatíveis). Se o seu navegador não suportar, ele vai baixar o JSON normalmente.
-        </div>
-
-        <div style="margin-top:10px; padding:10px; border:1px solid var(--border); border-radius:8px; background:var(--bg-darker); color:var(--text-secondary); font-size:.85em;">
-          <strong>Status do arquivo:</strong>
-          <span id="statusArquivoJson">Nenhum arquivo selecionado</span>
+          <strong>Dica:</strong> para carregar automaticamente um <code>produtos.json</code>, coloque este HTML e o arquivo na mesma pasta e abra via servidor (ex.: GitHub Pages / Live Server).
         </div>
       </div>
     </div>
@@ -484,12 +473,6 @@
       { codigo1:"NULL", codigo2:"123", nome:"ABRAÇADEIRA AÇO TIPO U COMUM 1/2\\\"", estoqueMin:0, estoqueAtual:0, preco:0.35, setor:"CONSTRUÇÃO" }
     ];
 
-    // ===== Mudança 2: "Salvar arquivo .JSON" no próprio sistema =====
-    // Usa File System Access API quando disponível (Chrome/Edge e alguns ambientes).
-    // Se não tiver suporte, faz download normal (como exportarJSON).
-    let jsonFileHandle = null;
-    let autoSalvarJsonAtivo = false;
-
     document.addEventListener('DOMContentLoaded', () => {
       carregarDados();
       construirSetores();
@@ -497,7 +480,6 @@
       atualizarStats();
       carregarRelatorios();
       exibirToast('✅ Sistema carregado!');
-      atualizarStatusArquivoJson();
     });
 
     function normalizarSetor(p){
@@ -542,9 +524,7 @@
             }
           }
         }
-      }catch(err){
-        // ignora
-      }
+      }catch(err){}
 
       produtos = dadosIniciais.map(p => ({...p}));
       salvarDados(false);
@@ -553,10 +533,6 @@
 
     function salvarDados(recarregar = true){
       localStorage.setItem('produtosAlmox', JSON.stringify(produtos));
-
-      // Auto-salvar JSON se estiver ativo e tiver um arquivo já escolhido
-      autoSalvarJsonSePossivel();
-
       if (recarregar){
         filtrar();
         atualizarStats();
@@ -777,7 +753,7 @@
           </tr>`;
         }).join('');
         conteudo = `
-          <p style="color: var(--text-secondary); margin-bottom: 16px;">Total de ${produtos.length} produtos no almox</p>
+          <p style="color: var(--text-secondary); margin-bottom: 16px;">Total de ${produtos.length} produtos</p>
           <table class="rel-table">
             <thead><tr><th>Código</th><th>Produto</th><th style="text-align:center;">Estoque</th><th>Setor</th><th style="text-align:right;">Preço</th></tr></thead>
             <tbody>${tabela}</tbody>
@@ -891,8 +867,7 @@
 
       if (sec === 'estoque'){
         document.getElementById('secEstoque').style.display = 'flex';
-        // Mudança 1: onde aparecia "ESTOQUE", agora é "ALMOX2026"
-        document.getElementById('titulo').textContent = '🏷️ ALMOX2026';
+        document.getElementById('titulo').textContent = '📦 ALMOX2026';
       } else if (sec === 'relatorio'){
         document.getElementById('secRelatorio').style.display = 'flex';
         document.getElementById('titulo').textContent = '📊 RELATÓRIOS';
@@ -977,10 +952,48 @@
       exibirToast('✅ JSON exportado!');
     }
 
+    /* ✅ NOVO: Botão "Salvar arquivo .JSON" (dentro do sistema)
+       - Se o navegador suportar showSaveFilePicker (geralmente Chrome/Edge), abre "Salvar como".
+       - Senão, faz download igual exportarJSON.
+    */
+    async function salvarArquivoJSON(){
+      try{
+        const json = JSON.stringify(produtos, null, 2);
+
+        if (window.showSaveFilePicker){
+          const suggestedName = `almox2026_${new Date().toISOString().split('T')[0]}.json`;
+          const handle = await window.showSaveFilePicker({
+            suggestedName,
+            types: [{ description: 'JSON', accept: { 'application/json': ['.json'] } }]
+          });
+
+          const writable = await handle.createWritable();
+          await writable.write(json);
+          await writable.close();
+
+          exibirToast('💾 Arquivo .JSON salvo!');
+          return;
+        }
+
+        // Fallback: download normal
+        const blob = new Blob([json], {type:'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `almox2026_${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+
+        exibirToast('💾 Arquivo .JSON gerado!');
+      }catch(err){
+        exibirToast('❌ Não foi possível salvar o arquivo', 'erro');
+      }
+    }
+
     function exportarCSV(){
-      let csv = 'Código1,Código2,Nome,Setor,Estoque Atual,Estoque Mínimo,Preço\\n';
+      let csv = 'Código1,Código2,Nome,Setor,Estoque Atual,Estoque Mínimo,Preço\n';
       produtos.forEach(p => {
-        csv += `"${String(p.codigo1 || '').replace(/"/g,'""')}","${String(p.codigo2 || '').replace(/"/g,'""')}","${String(p.nome || '').replace(/"/g,'""')}","${String(p.setor || '').replace(/"/g,'""')}",${p.estoqueAtual || 0},${p.estoqueMin || 0},${p.preco || 0}\\n`;
+        csv += `"${String(p.codigo1 || '').replace(/"/g,'""')}","${String(p.codigo2 || '').replace(/"/g,'""')}","${String(p.nome || '').replace(/"/g,'""')}","${String(p.setor || '').replace(/"/g,'""')}",${p.estoqueAtual || 0},${p.estoqueMin || 0},${p.preco || 0}\n`;
       });
       const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
       const url = URL.createObjectURL(blob);
@@ -996,4 +1009,27 @@
       const tamanho = new Blob([JSON.stringify(localStorage)]).size;
       document.getElementById('diagnostico').innerHTML = `
         <p>📦 <strong>Produtos:</strong> ${produtos.length}</p>
-        <p>📂 <strong>Setores únicos:</strong>
+        <p>📂 <strong>Setores únicos:</strong> ${new Set(produtos.map(p => p.setor)).size}</p>
+        <p>💾 <strong>Tamanho:</strong> ${(tamanho / 1024).toFixed(2)} KB</p>
+        <p>🕐 <strong>Atualizado:</strong> ${new Date().toLocaleString('pt-BR')}</p>
+        <p style="margin-top:12px;">✅ Sistema OK!</p>
+      `;
+    }
+
+    function limparDados(){
+      if(!confirm('⚠️ Tem certeza?')) return;
+      localStorage.clear();
+      produtos = dadosIniciais.map(p => ({...p}));
+      salvarDados(true);
+      exibirToast('🗑️ Resetado!');
+    }
+
+    function exibirToast(msg, tipo = 'sucesso'){
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.className = `toast show ${tipo === 'erro' ? 'erro' : tipo === 'aviso' ? 'aviso' : ''}`;
+      setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+  </script>
+</body>
+</html>
