@@ -1485,9 +1485,28 @@
                 try {
                     const dados = JSON.parse(event.target.result);
                     if(Array.isArray(dados) && dados.length > 0) {
-                        dados.forEach(p => {
-                            const setorEncontrado = SETORES_UNICOS.find(s => s.toUpperCase() === (p.setor || p.categoriaPrincipal || '').toUpperCase());
-                            p.setor = setorEncontrado || "CONSUMO";
+                                        dados = dados.map(p => {
+                                            // Mapear nova estrutura JSON para estrutura interna
+                                            const produtoMapeado = {
+                        codigo1: p.id || p.codigo1 || 'NULL',
+                            codigo2: p.sku || p.codigo2 || '',
+                            nome: p.nome || '',
+                                                estoqueAtual: p.estoque_atual !== undefined ? p.estoque_atual : (p.estoqueAtual || 0),
+                                                                    estoqueMin: p.estoque_minimo !== undefined ? p.estoque_minimo : (p.estoqueMin || 0),
+                            preco: p.preco_custo !== undefined ? p.preco_custo : (p.preco || 0),
+                                                                    setor: p.categoria || p.setor || 'CONSUMO',
+                            ncm: p.ncm || '',
+                                                                    descricao: p.descricao || '',
+                                                                    numero_sequencial: p.numero_sequencial,
+                                                                    linha_excel: p.linha_excel
+                                                                                        };
+
+                                // Normalizar o setor
+                                            const setorEncontrado = SETORES_UNICOS.find(s => s.toUpperCase() === (produtoMapeado.setor || '').toUpperCase());
+                                            if(setorEncontrado) produtoMapeado.setor = setorEncontrado;
+
+                                            // Retornar o produto mapeado para a lista
+                                            return produtoMapeado;
                         });
 
                         const modo = confirm('❓ SUBSTITUIR dados atuais?\nOK = Sim\nCancel = Mesclar');
