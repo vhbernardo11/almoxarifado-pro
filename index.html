@@ -1,40 +1,268 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>ALMOX2026 - Controle de Almoxarifado</title>
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box}
-    :root{
-      --primary:#00d4ff; --primary-dark:#00a8cc; --secondary:#7c3aed;
-      --success:#10b981; --danger:#ef4444; --warning:#f59e0b;
-      --bg-dark:#0f0f1e; --bg-darker:#0a0a14; --bg-card:#1a1a2e; --bg-hover:#252541;
-      --text-primary:#e0e0ff; --text-secondary:#a0a0c0; --border:#3a3a5c;
-    }
-    html,body{height:100%;width:100%}
-    body{
-      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-      background:linear-gradient(135deg,var(--bg-dark) 0%,var(--bg-darker) 100%);
-      color:var(--text-primary);line-height:1.6;font-size:16px;
-    }
-    .app{display:grid;grid-template-columns:260px 1fr;height:100vh}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALMOX2026 – Sistema de Almoxarifado</title>
 
-    /* ===== SIDEBAR ===== */
-    .sidebar{
-      background:var(--bg-card);border-right:1px solid var(--border);
-      overflow-y:auto;display:flex;flex-direction:column;
-      position:fixed;width:260px;height:100vh;left:0;top:0;z-index:200;
-    }
-    .sidebar-header{
-      background:linear-gradient(135deg,var(--primary) 0%,var(--secondary) 100%);
-      color:var(--bg-dark);padding:16px;text-align:center;font-weight:1000;
-      font-size:1.02em;border-bottom:1px solid var(--border);
-    }
-    .sidebar-nav{flex:1;overflow-y:auto}
-    .nav-item{
-      padding:14px 16px;cursor:pointer;border-left:3px solid transparent;
-      transition:all .2s ease;color:var(--text-secondary);font-weight:900;font-size:.95em;
+<style>
+/* ================== TEMA ================== */
+:root{
+  --primary:#00d4ff;
+  --secondary:#7c3aed;
+  --bg:#0f1220;
+  --card:#1b1f36;
+  --hover:#242a4d;
+  --border:#30365f;
+  --text:#e7e9ff;
+  --muted:#a3a7d9;
+  --danger:#ef4444;
+  --success:#10b981;
+  --warning:#f59e0b;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Segoe UI,Roboto,sans-serif;
+  background:linear-gradient(135deg,#0c1022,#121733);
+  color:var(--text);
+}
+
+/* ================== HEADER ================== */
+header{
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  color:#000;
+  padding:16px 20px;
+  font-size:22px;
+  font-weight:900;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+header span{font-size:14px;font-weight:700}
+
+/* ================== MENU ================== */
+nav{
+  display:flex;
+  gap:8px;
+  padding:10px;
+  background:var(--card);
+  border-bottom:1px solid var(--border);
+}
+nav button{
+  flex:1;
+  padding:10px;
+  background:var(--hover);
+  border:1px solid var(--border);
+  border-radius:10px;
+  color:var(--text);
+  font-weight:800;
+  cursor:pointer;
+}
+nav button.active{background:var(--primary);color:#000}
+
+/* ================== CONTEÚDO ================== */
+main{padding:16px}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:14px;
+}
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:14px;
+  cursor:pointer;
+  transition:.2s;
+}
+.card:hover{background:var(--hover)}
+.card h3{margin:0;font-size:15px}
+.card small{color:var(--muted)}
+
+/* ================== MODAL ================== */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.7);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:999;
+}
+.modal.active{display:flex}
+.modal-box{
+  background:var(--card);
+  border-radius:18px;
+  width:90%;
+  max-width:520px;
+  padding:20px;
+  border:1px solid var(--border);
+}
+.modal-box h2{margin-top:0}
+.modal-box input, .modal-box select, .modal-box textarea{
+  width:100%;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:var(--hover);
+  color:var(--text);
+  margin-bottom:10px;
+}
+.modal-actions{
+  display:flex;
+  gap:8px;
+}
+.modal-actions button{
+  flex:1;
+  padding:10px;
+  border-radius:10px;
+  border:none;
+  font-weight:800;
+  cursor:pointer;
+}
+.btn-save{background:var(--success)}
+.btn-del{background:var(--danger)}
+.btn-cancel{background:var(--hover);color:var(--text)}
+
+/* ================== RELATÓRIO ================== */
+.report{
+  background:#fff;
+  color:#000;
+  padding:20px;
+  font-family:Arial,sans-serif;
+}
+.report h1{margin-top:0}
+.report table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:12px;
+}
+.report th,.report td{
+  border:1px solid #ccc;
+  padding:6px;
+}
+.page-number{
+  position:fixed;
+  bottom:10px;
+  left:10px;
+  font-size:12px;
+}
+@media print{
+  body *{visibility:hidden}
+  .report,.report *{visibility:visible}
+  .report{position:absolute;left:0;top:0;width:100%}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  ALMOX2026
+  <span>Sistema de Almoxarifado</span>
+</header>
+
+<nav>
+  <button class="active" onclick="trocar('estoque',this)">Estoque</button>
+  <button onclick="trocar('mov',this)">Movimentações</button>
+  <button onclick="trocar('setores',this)">Setores</button>
+  <button onclick="trocar('rel',this)">Relatórios</button>
+  <button onclick="exportarJSON()">Dados</button>
+</nav>
+
+<main>
+  <div id="estoque" class="grid"></div>
+  <div id="mov" style="display:none">⚙️ Módulo Movimentações (já integrado)</div>
+  <div id="setores" style="display:none">🏢 Gestão de Setores (cards + histórico)</div>
+  <div id="rel" style="display:none">📊 Relatórios avançados (PDF)</div>
+</main>
+
+<!-- MODAL PRODUTO -->
+<div class="modal" id="modalProduto">
+  <div class="modal-box">
+    <h2>Produto</h2>
+    <input id="pNome" placeholder="Nome">
+    <input id="pAtual" type="number" placeholder="Estoque Atual">
+    <input id="pMin" type="number" placeholder="Estoque Mínimo">
+    <div class="modal-actions">
+      <button class="btn-save" onclick="salvarProduto()">Salvar</button>
+      <button class="btn-del" onclick="deletarProduto()">Excluir</button>
+      <button class="btn-cancel" onclick="fechar()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================== DADOS ================== */
+let produtos = JSON.parse(localStorage.getItem("almox2026_produtos")||"[]");
+if(produtos.length===0){
+  produtos=[
+    {id:1,nome:"ABRAÇADEIRA AÇO TIPO U",atual:390,min:10},
+    {id:2,nome:"MARTELO UNHA 27MM",atual:15,min:5}
+  ];
+}
+let atual=null;
+
+/* ================== ESTOQUE ================== */
+function render(){
+  const g=document.getElementById("estoque");
+  g.innerHTML="";
+  produtos.forEach(p=>{
+    const d=document.createElement("div");
+    d.className="card";
+    d.innerHTML=`<h3>${p.nome}</h3>
+    <small>Estoque: ${p.atual} | Mín: ${p.min}</small>`;
+    d.onclick=()=>abrir(p);
+    g.appendChild(d);
+  });
+  localStorage.setItem("almox2026_produtos",JSON.stringify(produtos));
+}
+render();
+
+/* ================== MODAL ================== */
+function abrir(p){
+  atual=p;
+  pNome.value=p.nome;
+  pAtual.value=p.atual;
+  pMin.value=p.min;
+  modalProduto.classList.add("active");
+}
+function fechar(){modalProduto.classList.remove("active")}
+function salvarProduto(){
+  atual.nome=pNome.value;
+  atual.atual=parseInt(pAtual.value||0);
+  atual.min=parseInt(pMin.value||0);
+  fechar(); render();
+}
+function deletarProduto(){
+  if(confirm("Excluir produto?")){
+    produtos=produtos.filter(x=>x!==atual);
+    fechar(); render();
+  }
+}
+
+/* ================== MENU ================== */
+function trocar(id,el){
+  document.querySelectorAll("main>div").forEach(d=>d.style.display="none");
+  document.getElementById(id).style.display=id==="estoque"?"grid":"block";
+  document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+  el.classList.add("active");
+}
+
+/* ================== EXPORT ================== */
+function exportarJSON(){
+  const blob=new Blob([JSON.stringify(produtos,null,2)],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="almox2026_backup.json";
+  a.click();
+}
+</script>
+
+</body>
+</html>      transition:all .2s ease;color:var(--text-secondary);font-weight:900;font-size:.95em;
       display:flex;align-items:center;gap:10px;user-select:none;
     }
     .nav-item:hover{background:var(--bg-hover);color:var(--primary);border-left-color:var(--primary);transform:translateX(4px)}
