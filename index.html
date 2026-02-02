@@ -236,13 +236,13 @@ box-shadow:0 14px 40px rgba(0,0,0,.45);
 		<meta property="og:url" content="https://almoxapp-6cszixvm.manus.space/almox-offline.html">
 		<meta property="og:title" content="ALMOX2026 Online">
 		<meta property="og:description" content="Sistema de gerenciamento de almoxarifado multiusuário com sincronização em tempo real e backend persistente.">
-		<meta property="og:image" content="https://files.manuscdn.com/webdev_screenshots/2026/02/02/T6NvK35wuB2wEgdQXNmvRq.png?x-oss-process=image/resize,w_1200/crop,h_630,x_0,y_0">
+		<meta property="og:image" content="https://files.manuscdn.com/webdev_screenshots/2026/02/02/FuonY37i5zc5xWyBGrwyop.png?x-oss-process=image/resize,w_1200/crop,h_630,x_0,y_0">
 		<meta property="og:image:width" content="1200">
 		<meta property="og:image:height" content="630">
 		<meta name="twitter:card" content="summary_large_image">
 		<meta name="twitter:title" content="ALMOX2026 Online">
 		<meta name="twitter:description" content="Sistema de gerenciamento de almoxarifado multiusuário com sincronização em tempo real e backend persistente.">
-		<meta name="twitter:image" content="https://files.manuscdn.com/webdev_screenshots/2026/02/02/T6NvK35wuB2wEgdQXNmvRq.png?x-oss-process=image/resize,w_1200/crop,h_630,x_0,y_0">
+		<meta name="twitter:image" content="https://files.manuscdn.com/webdev_screenshots/2026/02/02/FuonY37i5zc5xWyBGrwyop.png?x-oss-process=image/resize,w_1200/crop,h_630,x_0,y_0">
 		<meta name="twitter:image:width" content="1200">
 		<meta name="twitter:image:height" content="630"><link rel="canonical" href="https://almoxapp-6cszixvm.manus.space/almox-offline.html" /></head>
 <body>
@@ -254,6 +254,7 @@ box-shadow:0 14px 40px rgba(0,0,0,.45);
   <div class="fbtn" id="btnRel" title="Relatórios">📊</div>
   <div class="fbtn" id="btnSet" title="Setores">🏛️</div>
   <div class="fbtn" id="btnDados" title="Dados">💾</div>
+  <div class="fbtn" id="btnAdicionarProd" title="Incluir Produto">➕</div>
   <div class="fhandle" id="fhandle"></div>
 </div>
 
@@ -727,6 +728,11 @@ document.addEventListener("click",(e)=>{
 
 /* ---- Nav ---- */
 $("btnDados").addEventListener("click",()=>abrirModal("modalDados"));
+
+$("btnAdicionarProd").addEventListener("click",()=>{
+  if(produtos.length===0){ toast("⚠️ Importe o JSON em Dados"); abrirModal("modalDados"); return; }
+  abrirModal("modalAdicionarProd");
+});
 
 $("btnMov").addEventListener("click",()=>{
   if(produtos.length===0){ toast("⚠️ Importe o JSON em Dados"); abrirModal("modalDados"); return; }
