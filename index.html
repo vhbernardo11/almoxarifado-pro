@@ -1,10 +1,27 @@
 
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>ALMOX2026 • Offline (Base)</title>
+<title>ALMOX2026 Online</title>
+<script>
+  // Carregar produtos do backend automaticamente
+  (async function() {
+    try {
+      const response = await fetch('/api/almox/produtos');
+      if (response.ok) {
+        const produtos = await response.json();
+        const KEY_PROD = 'ALMOX2026_PROD_BASE_V1';
+        localStorage.setItem(KEY_PROD, JSON.stringify(produtos));
+        console.log('[ALMOX] ' + produtos.length + ' produtos carregados do backend');
+      }
+    } catch (e) {
+      console.warn('[ALMOX] Erro ao carregar produtos:', e);
+    }
+  })();
+</script>
 <style>
   :root{
     --bg0:#0b0d18; --bg1:#11142a; --card:#171b34; --card2:#1c2140;
@@ -215,7 +232,19 @@ box-shadow:0 14px 40px rgba(0,0,0,.45);
 
 @media (max-width:360px){ .actions{grid-template-columns:1fr} }
 </style>
-</head>
+<meta property="og:type" content="website">
+		<meta property="og:url" content="https://almoxapp-6cszixvm.manus.space/almox-offline.html">
+		<meta property="og:title" content="ALMOX2026 Online">
+		<meta property="og:description" content="Sistema de gerenciamento de almoxarifado multiusuário com sincronização em tempo real e backend persistente.">
+		<meta property="og:image" content="https://files.manuscdn.com/webdev_screenshots/2026/02/02/T6NvK35wuB2wEgdQXNmvRq.png?x-oss-process=image/resize,w_1200/crop,h_630,x_0,y_0">
+		<meta property="og:image:width" content="1200">
+		<meta property="og:image:height" content="630">
+		<meta name="twitter:card" content="summary_large_image">
+		<meta name="twitter:title" content="ALMOX2026 Online">
+		<meta name="twitter:description" content="Sistema de gerenciamento de almoxarifado multiusuário com sincronização em tempo real e backend persistente.">
+		<meta name="twitter:image" content="https://files.manuscdn.com/webdev_screenshots/2026/02/02/T6NvK35wuB2wEgdQXNmvRq.png?x-oss-process=image/resize,w_1200/crop,h_630,x_0,y_0">
+		<meta name="twitter:image:width" content="1200">
+		<meta name="twitter:image:height" content="630"><link rel="canonical" href="https://almoxapp-6cszixvm.manus.space/almox-offline.html" /></head>
 <body>
 
 <!-- Floating nav -->
@@ -265,6 +294,12 @@ box-shadow:0 14px 40px rgba(0,0,0,.45);
       </div>
       <div class="group">
         <button class="btn secondary" id="btnExport">📤 Exportar JSON (produtos)</button>
+      </div>
+      <div class="group">
+        <button class="btn secondary" id="btnExportExcel">📊 Exportar Excel</button>
+      </div>
+      <div class="group">
+        <button class="btn secondary" id="btnExportPDF">📄 Exportar PDF</button>
       </div>
       <div class="group muted" style="font-size:13px;line-height:1.4">
         <b>Android offline:</b> a primeira vez precisa importar. Depois fica salvo no aparelho (localStorage).
@@ -387,6 +422,69 @@ box-shadow:0 14px 40px rgba(0,0,0,.45);
   </div>
 </div>
 
+
+<!-- MODAL: INCLUIR PRODUTO -->
+<div class="modal" id="modalAdicionarProd" aria-hidden="true">
+  <div class="sheet">
+    <div class="mhead">
+      <div>➕ Incluir Novo Produto</div>
+      <button class="x" data-close="modalAdicionarProd">&times;</button>
+    </div>
+    <div class="mbar"></div>
+    <div class="mbody">
+      <div class="group">
+        <label>Código (7 dígitos) *</label>
+        <input type="text" id="novoProdCodigo1" placeholder="Ex: 8011001" maxlength="50" required>
+      </div>
+      <div class="group">
+        <label>Código (5 dígitos)</label>
+        <input type="text" id="novoProdCodigo2" placeholder="Ex: 1102" maxlength="50">
+      </div>
+      <div class="group">
+        <label>Nome do Produto *</label>
+        <input type="text" id="novoProdNome" placeholder="Ex: COCO RALADO PACOTE 100G" maxlength="255" required>
+      </div>
+      <div class="group">
+        <label>Descrição</label>
+        <input type="text" id="novoProdDescricao" placeholder="Descrição adicional" maxlength="500">
+      </div>
+      <div class="group">
+        <label>Categoria</label>
+        <input type="text" id="novoProdCategoria" placeholder="Ex: ALIMENTOS" maxlength="100">
+      </div>
+      <div class="group">
+        <label>NCM</label>
+        <input type="text" id="novoProdNCM" placeholder="Ex: 19059090" maxlength="20">
+      </div>
+      <div class="group">
+        <label>Preço (R$)</label>
+        <input type="number" id="novoProdPreco" placeholder="0.00" step="0.01" min="0">
+      </div>
+      <div class="group">
+        <label>Estoque Mínimo</label>
+        <input type="number" id="novoProdEstoqueMin" placeholder="0" value="0" min="0">
+      </div>
+      <div class="group">
+        <label>Estoque Inicial</label>
+        <input type="number" id="novoProdEstoqueInicial" placeholder="0" value="0" min="0">
+      </div>
+      <div class="group">
+        <label>Setor</label>
+        <input type="text" id="novoProdSetor" placeholder="ALMOXARIFADO" value="ALMOXARIFADO" maxlength="100">
+      </div>
+      <div class="group">
+        <label>
+          <input type="checkbox" id="novoProdAtivo" checked>
+          Ativo
+        </label>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn secondary" data-close="modalAdicionarProd">Cancelar</button>
+      <button class="btn primary" id="btnSalvarNovoProd">✅ Salvar Produto</button>
+    </div>
+  </div>
+</div>
 
 <!-- MODAL: RELATÓRIOS -->
 <div class="modal" id="modalRel" aria-hidden="true">
@@ -1564,6 +1662,11 @@ $("btnGravarMov")?.addEventListener("click",()=>{
   render();          // atualiza estoque na tela
   renderMovList();   // atualiza lista
   toast("✅ Movimentação gravada");
+  
+  // Notificar outros usuários via WebSocket
+  if(window.notificarMovimentacao) {
+    window.notificarMovimentacao(movs[movs.length - 1]);
+  }
 
   // limpa item para próxima
   $("mItem").value = "";
@@ -1594,6 +1697,10 @@ function renderMovList(){
         Qtd: <b style="color:var(--pri)">${m.qtd}</b> • ${escapeHtml(m.origem)} → ${escapeHtml(m.destino)}
       </div>
       ${m.obs ? `<div class="muted" style="margin-top:6px">${escapeHtml(m.obs)}</div>` : ""}
+      <div style="margin-top:10px;display:flex;gap:8px">
+        <button class="fbtn" style="width:auto;padding:6px 12px;font-size:12px;background:rgba(59,130,246,.2);border-color:rgba(59,130,246,.5)" onclick="editarMovimentacao(movs.findIndex(mv => mv.id === '${m.id}'))">Editar</button>
+        <button class="fbtn" style="width:auto;padding:6px 12px;font-size:12px;background:rgba(239,68,68,.2);border-color:rgba(239,68,68,.5)" onclick="deletarMovimentacao(movs.findIndex(mv => mv.id === '${m.id}'))">Deletar</button>
+      </div>
     `;
     box.appendChild(div);
   });
@@ -1616,5 +1723,157 @@ document.addEventListener("DOMContentLoaded",()=>{
   $("q").addEventListener("input",render);
 });
 </script>
-</body>
+<script src="/almox-sync.js"></script>
+<manus-content-root></manus-content-root><script>
+			var __manus_space_editor_info = {
+			spaceId : '6CSziXVmCQYR2QG3vW2dnY',
+			patchList : [],
+			hideBadge : false,
+			sessionId : 'MXqgWn7BsaR7mkZUcpiBUc',
+			isWebDev : true,
+			usageStatus : 'UsageStatus_Unknown',
+			};
+			var __manus__global_env = {
+				apiHost: 'https://api.manus.im',
+				host: 'https://manus.im',
+				amplitudeKey: '46ac3f9abb41dd2d17a5785e052bc6d3',
+			};
+			</script><script src="https://files.manuscdn.com/manus-space-dispatcher/spaceEditor-DPV-_I11.js" async></script><script
+			defer
+			data-domain="manus.space"
+			src="https://plausible.io/js/script.file-downloads.hash.outbound-links.pageview-props.revenue.tagged-events.js"
+		></script>
+		<script>
+			window.plausible =
+				window.plausible ||
+				function () {
+					(window.plausible.q = window.plausible.q || []).push(arguments);
+				};
+			plausible('custom-pageview', {
+			  props: {
+    			domain: window.location.host
+  			}
+			})
+		</script></body>
 </html>
+
+<script>
+// Listeners para exportação de relatórios
+document.addEventListener('DOMContentLoaded', function() {
+  const btnExportExcel = document.getElementById('btnExportExcel');
+  const btnExportPDF = document.getElementById('btnExportPDF');
+  
+  if(btnExportExcel) {
+    btnExportExcel.addEventListener('click', function() {
+      console.log('[ALMOX] Exportando relatório em Excel...');
+      window.location.href = '/api/almox/export/excel';
+    });
+  }
+  
+  if(btnExportPDF) {
+    btnExportPDF.addEventListener('click', function() {
+      console.log('[ALMOX] Exportando relatório em PDF...');
+      window.location.href = '/api/almox/export/pdf';
+    });
+  }
+});
+</script>
+
+<script>
+// Função para salvar novo produto
+async function salvarNovoProduto() {
+  const codigo1 = document.getElementById('novoProdCodigo1').value.trim();
+  const codigo2 = document.getElementById('novoProdCodigo2').value.trim();
+  const nome = document.getElementById('novoProdNome').value.trim();
+  const descricao = document.getElementById('novoProdDescricao').value.trim();
+  const categoria = document.getElementById('novoProdCategoria').value.trim();
+  const ncm = document.getElementById('novoProdNCM').value.trim();
+  const preco = document.getElementById('novoProdPreco').value;
+  const estoqueMin = parseInt(document.getElementById('novoProdEstoqueMin').value) || 0;
+  const estoque_inicial = parseInt(document.getElementById('novoProdEstoqueInicial').value) || 0;
+  const setor = document.getElementById('novoProdSetor').value.trim();
+  const ativo = document.getElementById('novoProdAtivo').checked;
+
+  // Validar campos obrigatórios
+  if (!codigo1 || !nome) {
+    alert('Código (7 dígitos) e Nome são obrigatórios!');
+    return;
+  }
+
+  try {
+    const response = await fetch('/api/almox/produtos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        codigo1,
+        codigo2: codigo2 || codigo1,
+        nome,
+        descricao,
+        categoria,
+        ncm,
+        preco: preco ? parseFloat(preco) : 0,
+        estoqueMin,
+        setor,
+        ativo,
+        estoque_inicial,
+      }),
+    });
+
+    if (!response.ok) {
+      const erro = await response.json();
+      alert('Erro: ' + (erro.erro || 'Erro ao salvar produto'));
+      return;
+    }
+
+    const resultado = await response.json();
+    alert('Produto criado com sucesso! Código: ' + resultado.produto.codigo1);
+
+    // Limpar formulário
+    document.getElementById('novoProdCodigo1').value = '';
+    document.getElementById('novoProdCodigo2').value = '';
+    document.getElementById('novoProdNome').value = '';
+    document.getElementById('novoProdDescricao').value = '';
+    document.getElementById('novoProdCategoria').value = '';
+    document.getElementById('novoProdNCM').value = '';
+    document.getElementById('novoProdPreco').value = '';
+    document.getElementById('novoProdEstoqueMin').value = '0';
+    document.getElementById('novoProdEstoqueInicial').value = '0';
+    document.getElementById('novoProdSetor').value = 'ALMOXARIFADO';
+    document.getElementById('novoProdAtivo').checked = true;
+
+    // Fechar modal
+    abrirModal('');
+
+    // Recarregar produtos
+    const prodResponse = await fetch('/api/almox/produtos');
+    if (prodResponse.ok) {
+      const produtos = await prodResponse.json();
+      const KEY_PROD = 'ALMOX2026_PROD_BASE_V1';
+      localStorage.setItem(KEY_PROD, JSON.stringify(produtos));
+      console.log('[ALMOX] Produtos recarregados');
+      
+      // Notificar via WebSocket
+      if (window.ws && window.ws.readyState === WebSocket.OPEN) {
+        window.ws.send(JSON.stringify({
+          tipo: 'produto_criado',
+          produto: resultado.produto,
+        }));
+      }
+
+      // Recarregar interface
+      render();
+    }
+  } catch (error) {
+    console.error('[ALMOX] Erro ao salvar produto:', error);
+    alert('Erro ao salvar produto: ' + error.message);
+  }
+}
+
+// Listener para botão de salvar
+document.addEventListener('DOMContentLoaded', function() {
+  const btnSalvar = document.getElementById('btnSalvarNovoProd');
+  if (btnSalvar) {
+    btnSalvar.addEventListener('click', salvarNovoProduto);
+  }
+});
+</script>
