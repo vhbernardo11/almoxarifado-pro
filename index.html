@@ -1647,18 +1647,6 @@ $("btnGravarMov")?.addEventListener("click",()=>{
   movProdutoIndex = -1;
 });
 
-  save();
-  render();          // atualiza estoque na tela
-  renderMovList();   // atualiza lista
-  toast("✅ Movimentação gravada");
-
-  // limpa item para próxima
-  $("mItem").value = "";
-  $("mObs").value = "";
-  $("mQtd").value = "1";
-  movProdutoIndex = -1;
-});
-
 function renderMovList(){
   const box = $("movList");
   if(!box) return;
@@ -1874,33 +1862,8 @@ document.addEventListener("DOMContentLoaded", async ()=>{
   load();
 
   // Auto-carregamento (quando servido via GitHub Pages / http)
-  if(produtos.length===0 && (location.protocol==="http:" || location.protocol==="https:")){
-    const candidates = [
-      "./ESTOQUEOBRAS_revisado.json",
-      "./ESTOQUEOBRAS_revisado%20(1).json",
-      "./ESTOQUEOBRAS_revisado (1).json",
-      "./produtos.json",
-      "./almox2026_FINAL_CONSOLIDADO.json",
-      "./data.json"
-    ];
-    for(const url of candidates){
-      try{
-        const resp = await fetch(url, {cache:"no-store"});
-        if(!resp.ok) continue;
-        const data = await resp.json();
-        const arr = parseInputJSON(data);
-        if(!arr) continue;
-        produtos = arr.map(normalizeProduto);
-        movs = Array.isArray(data.movimentacoes) ? data.movimentacoes : [];
-        save();
-        window.__lastJsonName = (url.split("/").pop() || "dados.json");
-        toast("✅ JSON carregado automaticamente");
-        break;
-      }catch{
-        // tenta o próximo
-      }
-    }
-  }
+  // Autoload desativado: use Dados > Importar JSON
+
 
   render();
   $("q").addEventListener("input",render);
