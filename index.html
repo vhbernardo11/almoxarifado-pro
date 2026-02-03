@@ -172,7 +172,35 @@ box-shadow:0 14px 40px rgba(0,0,0,.45);
   #modalRel .twocol{width:100%}
   #modalRel .twocol .btn{width:100%}
 
-  /* ===== Relatórios (tabelas) ===== */
+  
+  /* ===== Relatórios (tabs) ===== */
+  .rt-switch{display:flex;gap:8px;flex-wrap:wrap}
+  .rt-tab{
+    flex:1 1 auto;
+    padding:10px 12px;
+    border-radius:14px;
+    border:1px solid rgba(255,255,255,.14);
+    background:rgba(255,255,255,.06);
+    color:rgba(255,255,255,.92);
+    font-weight:950;
+    letter-spacing:.2px;
+    cursor:pointer;
+    white-space:nowrap;
+    text-align:center;
+    -webkit-tap-highlight-color: transparent;
+    transition:transform .08s ease, background .2s ease, border-color .2s ease;
+  }
+  .rt-tab:active{transform:scale(.98)}
+  .rt-tab.active{
+    background:linear-gradient(135deg,var(--pri),var(--sec));
+    color:#08101a;
+    border-color:transparent;
+  }
+  @media (max-width:420px){
+    .rt-tab{flex:1 1 48%}
+  }
+
+/* ===== Relatórios (tabelas) ===== */
   .rt-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:12px}
   .rt-title{font-weight:950;font-size:16px;margin-bottom:6px}
   .rt-sub{color:var(--muted);font-weight:800;font-size:12px;margin-bottom:10px}
@@ -210,10 +238,6 @@ box-shadow:0 14px 40px rgba(0,0,0,.45);
   .pCard,.prod-card,.cardItem,.itemCard,.produto-card{
     background:rgba(26,28,52,.92) !important;
   }
-
-.actions .btn{width:100%}
-
-@media (max-width:360px){ .actions{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
@@ -263,11 +287,28 @@ box-shadow:0 14px 40px rgba(0,0,0,.45);
         <button class="btn primary" id="btnImport">📥 Importar JSON</button>
         <input type="file" id="fileInput" accept=".json" style="display:none">
       </div>
+
       <div class="group">
-        <button class="btn secondary" id="btnExport">📤 Exportar JSON (produtos)</button>
+        <button class="btn secondary" id="btnExport">📤 Exportar JSON (produtos + movimentações)</button>
       </div>
+
+      <div class="group">
+        <button class="btn secondary" id="btnExportCSV">📄 Exportar CSV (produtos)</button>
+      </div>
+
+      <div class="group" style="display:grid; gap:8px;">
+        <div class="muted" style="font-weight:850;">🔗 Vincular arquivo (opcional)</div>
+        <button class="btn secondary" id="btnLinkFile">📎 Escolher arquivo .json (lembrar)</button>
+        <button class="btn secondary" id="btnSaveToLinked" disabled>💾 Salvar no mesmo arquivo</button>
+        <div class="muted" id="dbFileStatus" style="font-size:13px;line-height:1.35;">
+          Nenhum arquivo vinculado.
+        </div>
+      </div>
+
       <div class="group muted" style="font-size:13px;line-height:1.4">
-        <b>Android offline:</b> a primeira vez precisa importar. Depois fica salvo no aparelho (localStorage).
+        <b>Offline (Android/Chrome):</b> o navegador não consegue “alterar o JSON do repositório”.
+        O que ele faz é salvar tudo no aparelho e, quando você quiser, exporta um novo JSON já com as movimentações.
+        <div style="margin-top:8px"><b>Dica:</b> se o botão <i>Salvar no mesmo arquivo</i> não funcionar no seu celular, use o <i>Exportar</i>.</div>
       </div>
     </div>
     <div class="actions">
@@ -388,7 +429,63 @@ box-shadow:0 14px 40px rgba(0,0,0,.45);
 </div>
 
 
+
+<!-- MODAL: EDITAR/EXCLUIR MOVIMENTAÇÃO -->
+<div class="modal" id="modalMovEdit" aria-hidden="true">
+  <div class="sheet">
+    <div class="sheet-hd">
+      <div class="sheet-title">✏️ Editar movimentação</div>
+      <button class="x" onclick="fecharModal('modalMovEdit')">×</button>
+    </div>
+
+    <div class="sheet-bd">
+      <div class="grid2">
+        <div class="field" style="grid-column:1/-1">
+          <label>Item</label>
+          <input id="meItem" type="text" class="inp" readonly>
+          <div class="hint">Item não pode ser trocado aqui (para manter o vínculo com o estoque). Se precisar trocar, delete e grave outra.</div>
+        </div>
+
+        <div class="field">
+          <label>Quantidade</label>
+          <input id="meQtd" type="number" min="1" class="inp" inputmode="numeric">
+        </div>
+
+        <div class="field">
+          <label>Data/Hora</label>
+          <input id="meQuando" type="datetime-local" class="inp">
+        </div>
+
+        <div class="field">
+          <label>Setor origem</label>
+          <select id="meOrig" class="inp"></select>
+        </div>
+
+        <div class="field">
+          <label>Setor destinatário</label>
+          <select id="meDest" class="inp"></select>
+        </div>
+
+        <div class="field" style="grid-column:1/-1">
+          <label>Observação</label>
+          <input id="meObs" type="text" class="inp" placeholder="Opcional">
+        </div>
+      </div>
+
+      <div class="muted" style="margin-top:10px;font-weight:900" id="meInfo"></div>
+    </div>
+
+    <div class="sheet-ft">
+      <button class="btn ghost" onclick="fecharModal('modalMovEdit')">Cancelar</button>
+      <button class="btn danger" id="btnMovEditDel">🗑️ Deletar</button>
+      <button class="btn primary" id="btnMovEditSalvar">✅ Salvar</button>
+    </div>
+  </div>
+</div>
+
+
 <!-- MODAL: RELATÓRIOS -->
+
 <div class="modal" id="modalRel" aria-hidden="true">
   <div class="sheet">
     <div class="mhead">
@@ -396,33 +493,41 @@ box-shadow:0 14px 40px rgba(0,0,0,.45);
       <button class="x" data-close="modalRel">&times;</button>
     </div>
     <div class="mbar"></div>
+
     <div class="mbody">
-      <div class="group">
-        <label>Tipo de relatório</label>
-        <select id="rTipo">
-          <option value="inventario">📦 Inventário Geral</option>
-          <option value="baixo">⚠️ Produtos abaixo do mínimo</option>
-          <option value="classificacao">🏷️ Produtos por Classificação</option>
-          <option value="movsetor">🔁 Movimentações por Setor (por período)</option>
-        </select>
+      <div class="rt-switch" role="tablist" aria-label="Tipos de relatório">
+        <button class="rt-tab active" data-rt="inventario">📦 Inventário</button>
+        <button class="rt-tab" data-rt="baixo">⚠️ Abaixo do mínimo</button>
+        <button class="rt-tab" data-rt="zerados">❌ Zerados</button>
+        <button class="rt-tab" data-rt="classificacao">🏷️ Classificação</button>
+        <button class="rt-tab" data-rt="movsetor">🔁 Mov. por setor</button>
       </div>
 
-      <div id="rFiltros" class="group"></div>
+      <!-- Mantido para compatibilidade do JS -->
+      <select id="rTipo" style="display:none">
+        <option value="inventario">Inventário</option>
+        <option value="baixo">Abaixo do mínimo</option>
+        <option value="zerados">Zerados</option>
+        <option value="classificacao">Classificação</option>
+        <option value="movsetor">Movimentações por setor</option>
+      </select>
 
-      <div class="twocol">
+      <div id="rFiltros" class="group" style="margin-top:12px"></div>
+
+      <div class="twocol" style="margin-top:10px">
         <button class="btn primary" id="btnGerarRel">✅ Gerar</button>
         <button class="btn secondary" id="btnPDFRel">📄 Salvar em PDF</button>
       </div>
 
       <div id="rOut" style="margin-top:12px"></div>
     </div>
+
     <div class="actions">
       <button class="btn secondary" data-close="modalRel">Fechar</button>
       <button class="btn secondary" id="btnLimparRel">🧹 Limpar</button>
     </div>
   </div>
 </div>
-
 
 <!-- MODAL: GESTÃO DE SETORES -->
 <div class="modal" id="modalSet" aria-hidden="true">
@@ -495,18 +600,8 @@ box-shadow:0 14px 40px rgba(0,0,0,.45);
 
 <div class="toast" id="toast"></div>
 
+
 <script>
-/* Captura erros para facilitar teste no celular */
-window.addEventListener("error", (e)=>{
-  try{
-    toast("❌ Erro: " + (e.message || "desconhecido"));
-  }catch(_){}
-});
-window.addEventListener("unhandledrejection", (e)=>{
-  try{
-    toast("❌ Erro: " + (e.reason && e.reason.message ? e.reason.message : "promise"));
-  }catch(_){}
-});
 
 
 /* ========= ALMOX2026 • BASE OFFLINE (Fase 1) =========
@@ -530,76 +625,9 @@ let movProdutoIndex = -1; // índice do produto selecionado para movimentação
 
 
 let produtos = [];
-
-async function bootLoad(){
-  const adapter = getAdapter();
-  const data = await adapter.loadAll();
-  if(Array.isArray(data.produtos) && data.produtos.length){
-    produtos = data.produtos.map(normalizeProduto);
-  }
-  if(Array.isArray(data.movs) && data.movs.length){
-    movs = data.movs;
-  }
-}
-async function bootSave(){
-  const adapter = getAdapter();
-  await adapter.saveAll({produtos, movs});
-}
-
 let editIndex = -1;
 
 const $ = (id)=>document.getElementById(id);
-
-/* =========================
-   ALMOX2026 • Configuração
-   =========================
-   Offline (padrão): usa localStorage.
-   Manus/Deploy (online): mude DATA_MODE para "online" e implemente ApiAdapter.
-*/
-const CONFIG = {
-  APP_NAME: "ALMOX2026",
-  DATA_MODE: "offline", // "offline" | "online"
-  ONLINE: {
-    // Exemplo: Supabase/Manus
-    // baseUrl: "https://SEU-ENDPOINT",
-    // apiKey: "SUA-CHAVE",
-  }
-};
-
-/* Adapter (OFFLINE/ONLINE) — mantém o resto do app igual */
-const StorageAdapter = {
-  async loadAll(){
-    // retorna { produtos:[], movs:[] }
-    const rawP = localStorage.getItem("almox_produtos");
-    const rawM = localStorage.getItem("almox_movs");
-    return {
-      produtos: rawP ? JSON.parse(rawP) : [],
-      movs: rawM ? JSON.parse(rawM) : []
-    };
-  },
-  async saveAll({produtos, movs}){
-    localStorage.setItem("almox_produtos", JSON.stringify(produtos || []));
-    localStorage.setItem("almox_movs", JSON.stringify(movs || []));
-  }
-};
-
-/* Placeholder: quando for para o Manus, substitua estas funções por chamadas ao seu backend */
-const ApiAdapter = {
-  async loadAll(){
-    throw new Error("Online não configurado. Ajuste CONFIG.DATA_MODE e implemente ApiAdapter.");
-  },
-  async saveAll(){
-    throw new Error("Online não configurado. Ajuste CONFIG.DATA_MODE e implemente ApiAdapter.");
-  }
-};
-
-function getAdapter(){
-  return (CONFIG.DATA_MODE === "online") ? ApiAdapter : StorageAdapter;
-}
-
-async function persistAll(){
-  try{ await bootSave(); }catch(e){ /* ignore */ }
-}
 
 function toast(msg){
   const t=$("toast");
@@ -644,6 +672,22 @@ $("btnRel").addEventListener("click",()=>{
   $("rOut").innerHTML = "";
   abrirModal("modalRel");
 });
+
+// Tabs de relatórios (mudança instantânea)
+document.addEventListener("click",(e)=>{
+  const b = e.target && e.target.closest ? e.target.closest(".rt-tab") : null;
+  if(!b) return;
+  const t = b.getAttribute("data-rt");
+  if(!t) return;
+  document.querySelectorAll("#modalRel .rt-tab").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active");
+  $("rTipo").value = t;
+  renderFiltrosRel();
+  $("rOut").innerHTML = "";
+  lastPDFHtml = "";
+});
+
+
 
 $("rTipo").addEventListener("change",renderFiltrosRel);
 
@@ -690,6 +734,8 @@ function renderFiltrosRel(){
       if(rDe) rDe.value = hoje;
       if(rAte) rAte.value = hoje;
     },0);
+  } else if(tipo==="zerados"){
+    box.innerHTML = `<div class="muted" style="font-size:12px;font-weight:800">Lista de produtos com estoque atual = 0.</div>`;
   } else if(tipo==="classificacao"){
     const cats = categoriasUnicas();
     const opts = ['<option value="">(Todas)</option>'].concat(cats.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`));
@@ -763,6 +809,7 @@ tbody td{padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
 tbody tr:nth-child(even){background:#f6f7fb}
 .card{border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:10px}
 .footer{position:fixed;left:0;right:0;bottom:0;padding:6mm 12mm;font-size:11px;color:var(--mut);display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);background:#fff}
+.pnum{font-weight:900}
 .pnum::after{content:"Página " counter(page) " de " counter(pages);}
 @page{margin:14mm 12mm 18mm}
 </style></head>
@@ -782,8 +829,8 @@ tbody tr:nth-child(even){background:#f6f7fb}
   ${bodyHTML}
 </div>
 <div class="footer">
-  <div>ALMOX2026 • Relatório</div>
   <div class="pnum"></div>
+  <div>ALMOX2026 • Relatório</div>
 </div>
 </body></html>`;
 }
@@ -865,6 +912,35 @@ $("btnGerarRel").addEventListener("click",()=>{
         .replace(/<table class="rt-table">/g,'<table>')
     });
     lastPDFName = "abaixo_minimo";
+    toast("✅ Relatório gerado");
+    return;
+  }
+
+  if(tipo==="zerados"){
+    const list = produtos.filter(p=> (p.estoqueAtual||0) === 0);
+    const rows = list.map(p=>({
+      "Código": escapeHtml(p.codigo2||p.codigo1||""),
+      "Produto": escapeHtml(p.nome||""),
+      "Classificação": escapeHtml(p.categoria||""),
+      "Mín": String(p.estoqueMin||0),
+      "Preço": `R$ ${(Number(p.preco)||0).toFixed(2)}`
+    }));
+    const cols = ["Código","Produto","Classificação","Mín","Preço"];
+    const table = tableFromRows(cols, rows);
+    const htmlCard = buildReportCard(
+      "Produtos zerados",
+      `Total: ${list.length}`,
+      table
+    );
+    out.innerHTML = htmlCard;
+
+    lastPDFHtml = buildPrintableDoc({
+      title:"Produtos zerados",
+      subtitle:`Total: ${list.length}`,
+      bodyHTML: htmlCard.replace(/rt-card/g,'card').replace(/rt-table/g,'')
+        .replace(/<table class="rt-table">/g,'<table>')
+    });
+    lastPDFName = "produtos_zerados";
     toast("✅ Relatório gerado");
     return;
   }
@@ -1233,24 +1309,6 @@ function categoriasUnicas(){
   return Array.from(s).sort((a,b)=>String(a).localeCompare(String(b),'pt-BR'));
 }
 
-function limparNomeCategoria(v){
-  v = String(v||"").trim();
-  v = v.replace(/\s+/g," ");
-  return v;
-}
-function garantirCategoriaNoSelect(selectEl, cat){
-  const v = limparNomeCategoria(cat);
-  if(!v) return;
-  const exists = Array.from(selectEl.options).some(o=>o.value===v);
-  if(!exists){
-    const opt = document.createElement("option");
-    opt.value = v; opt.textContent = v;
-    const newOpt = Array.from(selectEl.options).find(o=>o.value==="__NEW__");
-    if(newOpt) selectEl.insertBefore(opt, newOpt);
-    else selectEl.appendChild(opt);
-  }
-}
-
 /* ---- UI Estoque ---- */
 function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;" }[m])); }
 function statusProduto(p){
@@ -1335,8 +1393,7 @@ function openEdit(p){
 
   const catList = categoriasUnicas();
   $("pCategoria").innerHTML = (catList.length ? catList : ["SEM CLASSIFICAÇÃO"])
-    .map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("")
-    + `<option value="__NEW__">➕ Nova classificação…</option>`;
+    .map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
 
   $("pCodigo1").value = p.codigo1 ?? "";
   $("pCodigo2").value = p.codigo2 ?? "";
@@ -1347,24 +1404,6 @@ function openEdit(p){
   $("pPreco").value   = p.preco ?? 0;
   $("pDesc").value    = p.descricao ?? "";
 
-
-// seleção dinâmica de classificação (permite criar novas)
-$("pCategoria").addEventListener("change", ()=>{
-  if(editIndex<0) return;
-  const sel = $("pCategoria");
-  if(sel.value==="__NEW__"){
-    const novo = prompt("Digite a nova classificação:", "");
-    const v = limparNomeCategoria(novo);
-    if(!v){
-      // volta para a atual do produto
-      sel.value = produtos[editIndex].categoria || "SEM CLASSIFICAÇÃO";
-      return;
-    }
-    // garante que existe no select e seleciona
-    garantirCategoriaNoSelect(sel, v);
-    sel.value = v;
-  }
-});
   abrirModal("modalProduto");
 }
 
@@ -1399,54 +1438,250 @@ $("btnDelProd").addEventListener("click",()=>{
 });
 
 /* ---- Dados: importar/exportar/reset ---- */
-$("btnImport").addEventListener("click",()=> $("fileInput").click());
+(function bindDados(){
+  const btnImport = $("btnImport");
+  const fileInput = $("fileInput");
+  const btnExport = $("btnExport");
+  const btnExportCSV = $("btnExportCSV");
+  const btnReset = $("btnReset");
 
-$("fileInput").addEventListener("change",(e)=>{
-  const file = e.target.files && e.target.files[0];
-  if(!file) return;
+  if(btnImport && fileInput){
+    btnImport.addEventListener("click",()=> fileInput.click());
+    fileInput.addEventListener("change",(e)=>{
+      const file = e.target.files && e.target.files[0];
+      if(!file) return;
 
-  const r = new FileReader();
-  r.onload = ()=>{
-    try{
-      const data = JSON.parse(r.result);
-      const arr = parseInputJSON(data);
-      if(!arr){ toast("⚠️ JSON inválido"); return; }
-      produtos = arr.map(normalizeProduto);
-      movs = [];
-      save();
-      toast(`✅ Importado: ${produtos.length}`);
-      fecharModal("modalDados");
+      const r = new FileReader();
+      r.onload = ()=>{
+        try{
+          const data = JSON.parse(r.result);
+
+          // Aceita: [ ... ], {produtos:[...]}, ou formato antigo especial
+          const arr = parseInputJSON(data);
+          if(!arr || !Array.isArray(arr)){
+            toast("⚠️ JSON inválido (não achei lista de produtos)");
+            return;
+          }
+
+          produtos = arr.map(normalizeProduto);
+
+          // movimentações embutidas (se existirem)
+          movs = Array.isArray(data?.movimentacoes) ? data.movimentacoes
+               : Array.isArray(data?.movs) ? data.movs
+               : [];
+
+          save();
+          toast(`✅ Importado: ${produtos.length} itens`);
+          fecharModal("modalDados");
+          render();
+
+          window.__lastJsonName = file.name || "dados.json";
+          updateLinkedStatus();
+        }catch(err){
+          console.error("Import JSON error:", err);
+          toast("❌ Erro ao importar (JSON inválido ou formato inesperado)");
+        }
+      };
+      r.readAsText(file);
+      e.target.value="";
+    });
+  }
+
+  if(btnExport){
+    btnExport.addEventListener("click",()=>{
+      const payload = { produtos, movimentacoes: movs, exportado_em: new Date().toISOString() };
+      const blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = (window.__lastJsonName && /\.json$/i.test(window.__lastJsonName))
+        ? window.__lastJsonName.replace(/\.json$/i,"_ATUALIZADO.json")
+        : "ALMOX2026_ATUALIZADO.json";
+      a.click();
+      URL.revokeObjectURL(url);
+      toast("📤 JSON exportado");
+    });
+  }
+
+  if(btnExportCSV){
+    btnExportCSV.addEventListener("click",()=>{
+      if(!Array.isArray(produtos) || produtos.length===0){ toast("⚠️ Nada para exportar"); return; }
+      const headers = ["codigo1","codigo2","codigo7","nome","categoria","ncm","estoqueAtual","estoqueMin","preco","setor"];
+      const rows = produtos.map(p=>{
+        const obj = {
+          codigo1: p.codigo1 ?? "",
+          codigo2: p.codigo2 ?? "",
+          codigo7: p.codigo7 ?? "",
+          nome: p.nome ?? "",
+          categoria: p.categoria ?? "",
+          ncm: p.ncm ?? "",
+          estoqueAtual: p.estoqueAtual ?? 0,
+          estoqueMin: p.estoqueMin ?? 0,
+          preco: p.preco ?? 0,
+          setor: p.setor ?? "ALMOXARIFADO"
+        };
+        return headers.map(h=>{
+          const v = (obj[h] ?? "").toString();
+          return '"' + v.replace(/"/g,'""') + '"';
+        }).join(",");
+      });
+      const csv = headers.join(",") + "\n" + rows.join("\n");
+      const blob = new Blob([csv], {type:"text/csv;charset=utf-8"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "ALMOX2026_PRODUTOS.csv";
+      a.click();
+      URL.revokeObjectURL(url);
+      toast("✅ CSV exportado");
+    });
+  }
+
+  if(btnReset){
+    btnReset.addEventListener("click",()=>{
+      if(!confirm("Limpar dados do aparelho?")) return;
+      localStorage.removeItem(KEY_PROD);
+      localStorage.removeItem(KEY_MOV);
+      produtos=[]; movs=[];
       render();
-    }catch{
-      toast("❌ Erro ao importar");
+      toast("🧹 Limpo");
+      updateLinkedStatus();
+    });
+  }
+})();
+
+/* ---- Vincular/Salvar no mesmo arquivo (File System Access API) ---- */
+const FS_DB = "ALMOX2026_FS_DB_V1";
+const FS_STORE = "handles";
+
+function fsOpenDB(){
+  return new Promise((resolve,reject)=>{
+    const req = indexedDB.open(FS_DB, 1);
+    req.onupgradeneeded = ()=>{
+      const db = req.result;
+      if(!db.objectStoreNames.contains(FS_STORE)) db.createObjectStore(FS_STORE);
+    };
+    req.onsuccess = ()=> resolve(req.result);
+    req.onerror = ()=> reject(req.error);
+  });
+}
+async function fsGet(key){
+  const db = await fsOpenDB();
+  return new Promise((resolve,reject)=>{
+    const tx = db.transaction(FS_STORE,"readonly");
+    const st = tx.objectStore(FS_STORE);
+    const rq = st.get(key);
+    rq.onsuccess = ()=> resolve(rq.result || null);
+    rq.onerror = ()=> reject(rq.error);
+  });
+}
+async function fsSet(key,val){
+  const db = await fsOpenDB();
+  return new Promise((resolve,reject)=>{
+    const tx = db.transaction(FS_STORE,"readwrite");
+    tx.objectStore(FS_STORE).put(val, key);
+    tx.oncomplete = ()=> resolve(true);
+    tx.onerror = ()=> reject(tx.error);
+  });
+}
+async function fsDel(key){
+  const db = await fsOpenDB();
+  return new Promise((resolve,reject)=>{
+    const tx = db.transaction(FS_STORE,"readwrite");
+    tx.objectStore(FS_STORE).delete(key);
+    tx.oncomplete = ()=> resolve(true);
+    tx.onerror = ()=> reject(tx.error);
+  });
+}
+
+async function updateLinkedStatus(){
+  const statusEl = document.getElementById("dbFileStatus");
+  const btnSave = document.getElementById("btnSaveToLinked");
+  const btnLink = document.getElementById("btnLinkFile");
+  if(!statusEl || !btnSave || !btnLink) return;
+
+  const supported = !!window.showOpenFilePicker && !!window.FileSystemFileHandle;
+  if(!supported){
+    statusEl.textContent = "Seu navegador não suporta salvar no mesmo arquivo. Use: Exportar JSON.";
+    btnSave.disabled = true;
+    btnLink.disabled = true;
+    return;
+  }
+
+  try{
+    const handle = await fsGet("jsonFile");
+    if(handle){
+      statusEl.textContent = "Arquivo vinculado. Você pode salvar no mesmo arquivo.";
+      btnSave.disabled = false;
+    }else{
+      statusEl.textContent = "Nenhum arquivo vinculado.";
+      btnSave.disabled = true;
     }
-  };
-  r.readAsText(file);
-  e.target.value="";
-});
+  }catch{
+    statusEl.textContent = "Não foi possível ler o arquivo vinculado.";
+    btnSave.disabled = true;
+  }
+}
 
-$("btnExport").addEventListener("click",()=>{
-  const payload = { produtos, movimentacoes: movs, exportado_em: new Date().toISOString() };
-  const blob = new Blob([JSON.stringify(payload,null,2)], {type:"application/json"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url; a.download = "ALMOX2026_backup_produtos_movs.json";
-  a.click();
-  URL.revokeObjectURL(url);
-  toast("📤 Exportado");
-});
-
-$("btnReset").addEventListener("click",()=>{
-  if(!confirm("Limpar dados do aparelho?")) return;
-  localStorage.removeItem(KEY_PROD);
-  localStorage.removeItem(KEY_MOV);
-  produtos=[]; movs=[];
+async function importarDeHandle(handle){
+  const file = await handle.getFile();
+  const text = await file.text();
+  const data = JSON.parse(text);
+  const arr = parseInputJSON(data);
+  if(!arr){ toast("⚠️ JSON inválido"); return; }
+  produtos = arr.map(normalizeProduto);
+  movs = Array.isArray(data.movimentacoes) ? data.movimentacoes : [];
+  save();
+  window.__lastJsonName = file.name || "dados.json";
+  toast(`✅ Importado: ${produtos.length}`);
+  fecharModal("modalDados");
   render();
-  toast("🧹 Limpo");
-});
+}
 
+document.addEventListener("DOMContentLoaded", ()=>{
+  const btnLink = document.getElementById("btnLinkFile");
+  const btnSave = document.getElementById("btnSaveToLinked");
+  if(btnLink){
+    btnLink.addEventListener("click", async ()=>{
+      try{
+        const [handle] = await window.showOpenFilePicker({
+          types:[{ description:"JSON", accept:{ "application/json":[".json"] } }],
+          multiple:false
+        });
+        if(!handle) return;
+        await fsSet("jsonFile", handle);
+        await importarDeHandle(handle);
+        updateLinkedStatus();
+      }catch(err){
+        // usuário cancelou ou não suportado
+      }
+    });
+  }
+  if(btnSave){
+    btnSave.addEventListener("click", async ()=>{
+      try{
+        const handle = await fsGet("jsonFile");
+        if(!handle){ toast("⚠️ Nenhum arquivo vinculado"); return; }
+
+        // pedir permissão
+        const perm = await handle.requestPermission?.({mode:"readwrite"});
+        if(perm && perm !== "granted"){ toast("⚠️ Permissão negada"); return; }
+
+        const payload = { produtos, movimentacoes: movs, exportado_em: new Date().toISOString() };
+        const writable = await handle.createWritable();
+        await writable.write(JSON.stringify(payload,null,2));
+        await writable.close();
+        toast("💾 Salvo no arquivo!");
+      }catch(err){
+        console.error(err);
+        toast("❌ Não foi possível salvar. Use Exportar JSON.");
+      }
+    });
+  }
+});
 
 /* ========= Fase 2: Movimentações =========
+
    Modelo de controle:
    - Origem ALMOXARIFADO: baixa estoqueAtual e credita saldo do setor (alocacoes[setor])
    - Origem SETOR: baixa alocacoes[origem] e credita alocacoes[destino]
@@ -1585,6 +1820,8 @@ function renderMovList(){
     const div=document.createElement("div");
     div.className="card";
     div.style.margin="0 0 10px 0";
+    div.style.cursor = "pointer";
+    div.setAttribute("data-id", m.id || "");
     div.innerHTML = `
       <div class="row">
         <div style="font-weight:950">${escapeHtml(m.produto_nome||"-")}</div>
@@ -1594,10 +1831,177 @@ function renderMovList(){
         Qtd: <b style="color:var(--pri)">${m.qtd}</b> • ${escapeHtml(m.origem)} → ${escapeHtml(m.destino)}
       </div>
       ${m.obs ? `<div class="muted" style="margin-top:6px">${escapeHtml(m.obs)}</div>` : ""}
+      <div class="row" style="margin-top:10px">
+        <button class="btn ghost" style="padding:8px 10px;font-size:12px" type="button">✏️ Editar / 🗑️ Deletar</button>
+      </div>
     `;
+    div.addEventListener("click",(ev)=>{
+      // se clicar no botão ou no card, abre o editor
+      const id = div.getAttribute("data-id");
+      if(id) openMovEditById(id);
+    });
     box.appendChild(div);
   });
 }
+
+
+
+/* --- Editar/Deletar movimentações (com reversão de estoque) --- */
+let movEditId = null;
+
+function resolveProdutoIndexFromMov(m){
+  const idx = Number(m.produto_idx);
+  if(Number.isInteger(idx) && idx>=0 && idx<produtos.length){
+    // valida se bate com código/nome para reduzir risco de índice "andar"
+    const p = produtos[idx];
+    if((m.codigo2 && p.codigo2===m.codigo2) || (m.produto_nome && p.nome===m.produto_nome)) return idx;
+  }
+  // fallback: tenta achar pelo código2
+  if(m.codigo2){
+    const j = produtos.findIndex(p=>String(p.codigo2||"")===String(m.codigo2));
+    if(j>=0) return j;
+  }
+  // fallback: tenta achar pelo nome
+  if(m.produto_nome){
+    const j = produtos.findIndex(p=>String(p.nome||"")===String(m.produto_nome));
+    if(j>=0) return j;
+  }
+  return -1;
+}
+
+function revertMov(m){
+  const idx = resolveProdutoIndexFromMov(m);
+  if(idx<0) return {ok:false, msg:"Produto não encontrado para reverter."};
+  const p = produtos[idx];
+  const qtd = Math.max(1, Number(m.qtd)||1);
+  if(m.origem==="ALMOXARIFADO"){
+    // devolve ao almox e retira do destino
+    p.estoqueAtual = (Number(p.estoqueAtual)||0) + qtd;
+    const al = ensureAloc(p);
+    al[m.destino] = Math.max(0, (Number(al[m.destino])||0) - qtd);
+  }else{
+    const al = ensureAloc(p);
+    al[m.origem] = (Number(al[m.origem])||0) + qtd;
+    al[m.destino] = Math.max(0, (Number(al[m.destino])||0) - qtd);
+  }
+  return {ok:true};
+}
+
+function applyMovToStock(m){
+  const idx = resolveProdutoIndexFromMov(m);
+  if(idx<0) return {ok:false, msg:"Produto não encontrado para aplicar."};
+  const p = produtos[idx];
+  const qtd = Math.max(1, Number(m.qtd)||1);
+
+  if(m.origem===m.destino) return {ok:false, msg:"Origem = destino"};
+
+  if(m.origem==="ALMOXARIFADO"){
+    if((Number(p.estoqueAtual)||0) < qtd) return {ok:false, msg:"Estoque insuficiente no ALMOX"};
+    p.estoqueAtual = (Number(p.estoqueAtual)||0) - qtd;
+    const al = ensureAloc(p);
+    al[m.destino] = (Number(al[m.destino])||0) + qtd;
+  }else{
+    const al = ensureAloc(p);
+    const saldo = Number(al[m.origem])||0;
+    if(saldo < qtd) return {ok:false, msg:"Saldo insuficiente no setor origem"};
+    al[m.origem] = saldo - qtd;
+    al[m.destino] = (Number(al[m.destino])||0) + qtd;
+  }
+  return {ok:true};
+}
+
+function movToDatetimeLocal(quando){
+  // tenta converter "pt-BR" ou ISO para datetime-local
+  if(!quando) return "";
+  // se já for yyyy-mm-ddThh:mm
+  if(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(quando)) return quando.slice(0,16);
+  // tenta parse pelo Date
+  const d = new Date(quando);
+  if(!isNaN(d.getTime())){
+    const pad=(n)=>String(n).padStart(2,"0");
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+  // tenta parse simples pt-BR "dd/mm/aaaa, hh:mm:ss" ou "dd/mm/aaaa hh:mm"
+  const m = String(quando).match(/(\d{2})\/(\d{2})\/(\d{4}).*?(\d{2}):(\d{2})/);
+  if(m){
+    const [_,dd,mm,yyyy,hh,mi]=m;
+    return `${yyyy}-${mm}-${dd}T${hh}:${mi}`;
+  }
+  return "";
+}
+
+function formatWhenFromInput(v){
+  if(!v) return new Date().toLocaleString("pt-BR");
+  return new Date(v).toLocaleString("pt-BR");
+}
+
+function openMovEditById(id){
+  const mov = movs.find(x=>x.id===id);
+  if(!mov){ toast("⚠️ Movimentação não encontrada"); return; }
+
+  // preenche selects (mesmo conjunto)
+  const opt = SETORES.map(s=>`<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join("");
+  $("meOrig").innerHTML = opt;
+  $("meDest").innerHTML = opt;
+
+  movEditId = id;
+  $("meItem").value = mov.produto_nome || "";
+  $("meQtd").value = Number(mov.qtd)||1;
+  $("meOrig").value = mov.origem || "ALMOXARIFADO";
+  $("meDest").value = mov.destino || "ADMINISTRAÇÃO";
+  $("meObs").value = mov.obs || "";
+  $("meQuando").value = movToDatetimeLocal(mov.quando);
+
+  const idx = resolveProdutoIndexFromMov(mov);
+  const p = idx>=0 ? produtos[idx] : null;
+  const alm = p ? (Number(p.estoqueAtual)||0) : 0;
+  $("meInfo").textContent = p ? `Estoque atual no ALMOX: ${alm} • Classificação: ${p.categoria||""}` : "Produto não localizado no estoque atual.";
+  abrirModal("modalMovEdit");
+}
+
+function commitMovEdit(action){
+  const movIdx = movs.findIndex(x=>x.id===movEditId);
+  if(movIdx<0){ toast("⚠️ Movimentação não encontrada"); return; }
+  const old = movs[movIdx];
+
+  if(action==="delete"){
+    if(!confirm("Deletar esta movimentação? O estoque será revertido.")) return;
+    const r = revertMov(old);
+    if(!r.ok){ toast("❌ "+(r.msg||"Falha ao reverter")); return; }
+    movs.splice(movIdx,1);
+    save(); render(); renderMovList();
+    fecharModal("modalMovEdit");
+    toast("🗑️ Movimentação deletada (estoque revertido)");
+    return;
+  }
+
+  // salvar
+  const updated = {...old};
+  updated.qtd = Math.max(1, parseInt($("meQtd").value,10)||1);
+  updated.origem = $("meOrig").value;
+  updated.destino = $("meDest").value;
+  updated.obs = $("meObs").value || "";
+  updated.quando = formatWhenFromInput($("meQuando").value);
+
+  // 1) reverte antigo
+  const r1 = revertMov(old);
+  if(!r1.ok){ toast("❌ "+(r1.msg||"Falha ao reverter (salvar)")); return; }
+
+  // 2) tenta aplicar novo
+  const r2 = applyMovToStock(updated);
+  if(!r2.ok){
+    // tenta restaurar antigo para não quebrar
+    applyMovToStock(old);
+    toast("❌ "+(r2.msg||"Falha ao aplicar alterações"));
+    return;
+  }
+
+  movs[movIdx] = updated;
+  save(); render(); renderMovList();
+  fecharModal("modalMovEdit");
+  toast("✅ Movimentação atualizada");
+}
+
 
 $("btnExportMov")?.addEventListener("click",()=>{
   const blob = new Blob([JSON.stringify(movs,null,2)], {type:"application/json"});
@@ -1609,12 +2013,49 @@ $("btnExportMov")?.addEventListener("click",()=>{
   toast("📤 Movimentações exportadas");
 });
 
+
+$("btnMovEditSalvar")?.addEventListener("click",()=>commitMovEdit("save"));
+$("btnMovEditDel")?.addEventListener("click",()=>commitMovEdit("delete"));
+
 /* ---- init ---- */
-document.addEventListener("DOMContentLoaded",()=>{
+document.addEventListener("DOMContentLoaded", async ()=>{
   load();
+
+  // Auto-carregamento (quando servido via GitHub Pages / http)
+  if(produtos.length===0 && (location.protocol==="http:" || location.protocol==="https:")){
+    const candidates = [
+      "./ESTOQUEOBRAS_revisado.json",
+      "./ESTOQUEOBRAS_revisado%20(1).json",
+      "./ESTOQUEOBRAS_revisado (1).json",
+      "./produtos.json",
+      "./almox2026_FINAL_CONSOLIDADO.json",
+      "./data.json"
+    ];
+    for(const url of candidates){
+      try{
+        const resp = await fetch(url, {cache:"no-store"});
+        if(!resp.ok) continue;
+        const data = await resp.json();
+        const arr = parseInputJSON(data);
+        if(!arr) continue;
+        produtos = arr.map(normalizeProduto);
+        movs = Array.isArray(data.movimentacoes) ? data.movimentacoes : [];
+        save();
+        window.__lastJsonName = (url.split("/").pop() || "dados.json");
+        toast("✅ JSON carregado automaticamente");
+        break;
+      }catch{
+        // tenta o próximo
+      }
+    }
+  }
+
   render();
   $("q").addEventListener("input",render);
+  updateLinkedStatus();
 });
+
+
 </script>
 </body>
 </html>
