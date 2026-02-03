@@ -1,9 +1,10 @@
 
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
 <title>ALMOX2026 • Offline (Base)</title>
 <style>
   :root{
@@ -241,366 +242,307 @@ box-shadow:0 14px 40px rgba(0,0,0,.45);
 </style>
 </head>
 <body>
-
 <!-- Floating nav -->
 <div class="fnav" id="fnav">
-  <div class="fbtn" id="btnEstoque" title="Estoque">📦</div>
-  <div class="fbtn" id="btnMov" title="Movimentações">🔁</div>
-  <div class="fbtn" id="btnRel" title="Relatórios">📊</div>
-  <div class="fbtn" id="btnSet" title="Setores">🏛️</div>
-  <div class="fbtn" id="btnDados" title="Dados">💾</div>
-  <div class="fhandle" id="fhandle"></div>
+<div class="fbtn" id="btnEstoque" title="Estoque">📦</div>
+<div class="fbtn" id="btnMov" title="Movimentações">🔁</div>
+<div class="fbtn" id="btnRel" title="Relatórios">📊</div>
+<div class="fbtn" id="btnSet" title="Setores">🏛️</div>
+<div class="fbtn" id="btnDados" title="Dados">💾</div>
+<div class="fhandle" id="fhandle"></div>
 </div>
-
 <main>
-  <div class="topbar">
-    <div>
-      <div class="title">ALMOX2026</div>
-      <div class="muted" style="margin-top:4px;font-weight:700">Base Offline • Importar JSON em Dados</div>
-    </div>
-    <div class="pill">
-      <span>Total: <b id="statTotal">0</b></span>
-      <span style="color:var(--ok)">OK: <b id="statOk">0</b></span>
-      <span style="color:var(--warn)">Baixo: <b id="statLow">0</b></span>
-      <span style="color:var(--bad)">Zerado: <b id="statZero">0</b></span>
-    </div>
-  </div>
-
-  <div class="search">
-    <span style="font-size:18px">🔎</span>
-    <input id="q" type="search" placeholder="Buscar por nome, código, classificação..." />
-  </div>
-
-  <div class="grid" id="grid"></div>
+<div class="topbar">
+<div>
+<div class="title">ALMOX2026</div>
+<div class="muted" style="margin-top:4px;font-weight:700">Base Offline • Importar JSON em Dados</div>
+</div>
+<div class="pill">
+<span>Total: <b id="statTotal">0</b></span>
+<span style="color:var(--ok)">OK: <b id="statOk">0</b></span>
+<span style="color:var(--warn)">Baixo: <b id="statLow">0</b></span>
+<span style="color:var(--bad)">Zerado: <b id="statZero">0</b></span>
+</div>
+</div>
+<div class="search">
+<span style="font-size:18px">🔎</span>
+<input id="q" placeholder="Buscar por nome, código, classificação..." type="search"/>
+</div>
+<div class="grid" id="grid"></div>
 </main>
-
 <!-- MODAL: DADOS -->
-<div class="modal" id="modalDados" aria-hidden="true">
-  <div class="sheet">
-    <div class="mhead">
-      <div>💾 Dados</div>
-      <button class="x" data-close="modalDados">&times;</button>
-    </div>
-    <div class="mbar"></div>
-    <div class="mbody">
-      <div class="group">
-        <button class="btn primary" id="btnImport">📥 Importar JSON</button>
-        <input type="file" id="fileInput" accept=".json" style="display:none">
-      </div>
-
-      <div class="group">
-        <button class="btn secondary" id="btnExport">📤 Exportar JSON (produtos + movimentações)</button>
-      </div>
-
-      <div class="group">
-        <button class="btn secondary" id="btnExportCSV">📄 Exportar CSV (produtos)</button>
-      </div>
-
-      <div class="group" style="display:grid; gap:8px;">
-        <div class="muted" style="font-weight:850;">🔗 Vincular arquivo (opcional)</div>
-        <button class="btn secondary" id="btnLinkFile">📎 Escolher arquivo .json (lembrar)</button>
-        <button class="btn secondary" id="btnSaveToLinked" disabled>💾 Salvar no mesmo arquivo</button>
-        <div class="muted" id="dbFileStatus" style="font-size:13px;line-height:1.35;">
+<div aria-hidden="true" class="modal" id="modalDados">
+<div class="sheet">
+<div class="mhead">
+<div>💾 Dados</div>
+<button class="x" data-close="modalDados">×</button>
+</div>
+<div class="mbar"></div>
+<div class="mbody">
+<div class="group">
+<button class="btn primary" id="btnImport">📥 Importar JSON</button>
+<input accept=".json" id="fileInput" style="display:none" type="file"/>
+</div>
+<div class="group">
+<button class="btn secondary" id="btnExport">📤 Exportar JSON (produtos + movimentações)</button>
+</div>
+<div class="group">
+<button class="btn secondary" id="btnExportCSV">📄 Exportar CSV (produtos)</button>
+</div>
+<div class="group" style="display:grid; gap:8px;">
+<div class="muted" style="font-weight:850;">🔗 Vincular arquivo (opcional)</div>
+<button class="btn secondary" id="btnLinkFile">📎 Escolher arquivo .json (lembrar)</button>
+<button class="btn secondary" disabled="" id="btnSaveToLinked">💾 Salvar no mesmo arquivo</button>
+<div class="muted" id="dbFileStatus" style="font-size:13px;line-height:1.35;">
           Nenhum arquivo vinculado.
         </div>
-      </div>
-
-      <div class="group muted" style="font-size:13px;line-height:1.4">
-        <b>Offline (Android/Chrome):</b> o navegador não consegue “alterar o JSON do repositório”.
+</div>
+<div class="group muted" style="font-size:13px;line-height:1.4">
+<b>Offline (Android/Chrome):</b> o navegador não consegue “alterar o JSON do repositório”.
         O que ele faz é salvar tudo no aparelho e, quando você quiser, exporta um novo JSON já com as movimentações.
         <div style="margin-top:8px"><b>Dica:</b> se o botão <i>Salvar no mesmo arquivo</i> não funcionar no seu celular, use o <i>Exportar</i>.</div>
-      </div>
-    </div>
-    <div class="actions">
-      <button class="btn secondary" data-close="modalDados">Fechar</button>
-      <button class="btn secondary" id="btnReset">🧹 Limpar dados do aparelho</button>
-    </div>
-  </div>
 </div>
-
+</div>
+<div class="actions">
+<button class="btn secondary" data-close="modalDados">Fechar</button>
+<button class="btn secondary" id="btnReset">🧹 Limpar dados do aparelho</button>
+</div>
+</div>
+</div>
 <!-- MODAL: EDITAR PRODUTO -->
-<div class="modal" id="modalProduto" aria-hidden="true">
-  <div class="sheet">
-    <div class="mhead">
-      <div>✏️ Editar produto</div>
-      <button class="x" data-close="modalProduto">&times;</button>
-    </div>
-    <div class="mbar"></div>
-    <div class="mbody">
-      <div class="group">
-        <label>Código 1</label>
-        <input id="pCodigo1" />
-      </div>
-      <div class="group">
-        <label>Código 2</label>
-        <input id="pCodigo2" />
-      </div>
-      <div class="group">
-        <label>Nome</label>
-        <input id="pNome" />
-      </div>
-      <div class="group">
-        <label>Classificação (do JSON)</label>
-        <select id="pCategoria"></select>
-      </div>
-      <div class="twocol">
-        <div class="group">
-          <label>Estoque atual (Almoxarifado)</label>
-          <input id="pAtual" type="number" min="0" />
-        </div>
-        <div class="group">
-          <label>Estoque mínimo</label>
-          <input id="pMin" type="number" min="0" />
-        </div>
-      </div>
-      <div class="group">
-        <label>Preço</label>
-        <input id="pPreco" type="number" step="0.01" min="0" />
-      </div>
-      <div class="group">
-        <label>Descrição</label>
-        <textarea id="pDesc" placeholder="Opcional"></textarea>
-      </div>
-    </div>
-    <div class="actions">
-      <button class="btn secondary" data-close="modalProduto">Cancelar</button>
-      <button class="btn danger" id="btnDelProd">🗑️ Deletar</button>
-      <button class="btn primary" id="btnSaveProd">✅ Salvar</button>
-    </div>
-  </div>
+<div aria-hidden="true" class="modal" id="modalProduto">
+<div class="sheet">
+<div class="mhead">
+<div>✏️ Editar produto</div>
+<button class="x" data-close="modalProduto">×</button>
 </div>
-
-
+<div class="mbar"></div>
+<div class="mbody">
+<div class="group">
+<label>Código 1</label>
+<input id="pCodigo1">
+</input></div>
+<div class="group">
+<label>Código 2</label>
+<input id="pCodigo2"/>
+</div>
+<div class="group">
+<label>Nome</label>
+<input id="pNome"/>
+</div>
+<div class="group">
+<label>Classificação (do JSON)</label>
+<select id="pCategoria"></select>
+</div>
+<div class="twocol">
+<div class="group">
+<label>Estoque atual (Almoxarifado)</label>
+<input id="pAtual" min="0" type="number"/>
+</div>
+<div class="group">
+<label>Estoque mínimo</label>
+<input id="pMin" min="0" type="number"/>
+</div>
+</div>
+<div class="group">
+<label>Preço</label>
+<input id="pPreco" min="0" step="0.01" type="number"/>
+</div>
+<div class="group">
+<label>Descrição</label>
+<textarea id="pDesc" placeholder="Opcional"></textarea>
+</div>
+</div>
+<div class="actions">
+<button class="btn secondary" data-close="modalProduto">Cancelar</button>
+<button class="btn danger" id="btnDelProd">🗑️ Deletar</button>
+<button class="btn primary" id="btnSaveProd">✅ Salvar</button>
+</div>
+</div>
+</div>
 <!-- MODAL: MOVIMENTAÇÕES (1 tela) -->
-<div class="modal" id="modalMov" aria-hidden="true">
-  <div class="sheet">
-    <div class="mhead">
-      <div>🔁 Movimentações</div>
-      <button class="x" data-close="modalMov">&times;</button>
-    </div>
-    <div class="mbar"></div>
-    <div class="mbody">
-      <div class="group">
-        <label>Item (digite para buscar)</label>
-        <input id="mItem" placeholder="Ex.: sulfite, martelo..." autocomplete="off" />
-        <div id="mSug" style="display:none; margin-top:8px; border:1px solid rgba(255,255,255,.12); border-radius:14px; overflow:hidden;"></div>
-      </div>
-
-      <div class="twocol">
-        <div class="group">
-          <label>Quantidade</label>
-          <input id="mQtd" type="number" min="1" value="1" />
-        </div>
-        <div class="group">
-          <label>Data/Hora</label>
-          <input id="mQuando" type="datetime-local" />
-        </div>
-      </div>
-
-      <div class="group">
-        <label>Setor origem</label>
-        <select id="mOrig"></select>
-      </div>
-      <div class="group">
-        <label>Setor destinatário</label>
-        <select id="mDest"></select>
-      </div>
-
-      <div class="group">
-        <label>Observação</label>
-        <input id="mObs" placeholder="Opcional" />
-      </div>
-
-      <div class="group">
-        <button class="btn primary" id="btnGravarMov">✅ Gravar movimentação</button>
-      </div>
-
-      <div class="group">
-        <div class="muted" style="font-weight:900;margin-bottom:8px">Últimas movimentações</div>
-        <div id="movList"></div>
-      </div>
-    </div>
-
-    <div class="actions">
-      <button class="btn secondary" data-close="modalMov">Fechar</button>
-      <button class="btn secondary" id="btnExportMov">📤 Exportar Movimentações</button>
-    </div>
-  </div>
+<div aria-hidden="true" class="modal" id="modalMov">
+<div class="sheet">
+<div class="mhead">
+<div>🔁 Movimentações</div>
+<button class="x" data-close="modalMov">×</button>
 </div>
-
-
-
+<div class="mbar"></div>
+<div class="mbody">
+<div class="group">
+<label>Item (digite para buscar)</label>
+<input autocomplete="off" id="mItem" placeholder="Ex.: sulfite, martelo..."/>
+<div id="mSug" style="display:none; margin-top:8px; border:1px solid rgba(255,255,255,.12); border-radius:14px; overflow:hidden;"></div>
+</div>
+<div class="twocol">
+<div class="group">
+<label>Quantidade</label>
+<input id="mQtd" min="1" type="number" value="1"/>
+</div>
+<div class="group">
+<label>Data/Hora</label>
+<input id="mQuando" type="datetime-local"/>
+</div>
+</div>
+<div class="group">
+<label>Setor origem</label>
+<select id="mOrig"></select>
+</div>
+<div class="group">
+<label>Setor destinatário</label>
+<select id="mDest"></select>
+</div>
+<div class="group">
+<label>Observação</label>
+<input id="mObs" placeholder="Opcional"/>
+</div>
+<div class="group">
+<button class="btn primary" id="btnGravarMov">✅ Gravar movimentação</button>
+</div>
+<div class="group">
+<div class="muted" style="font-weight:900;margin-bottom:8px">Últimas movimentações</div>
+<div id="movList"></div>
+</div>
+</div>
+<div class="actions">
+<button class="btn secondary" data-close="modalMov">Fechar</button>
+<button class="btn secondary" id="btnExportMov">📤 Exportar Movimentações</button>
+</div>
+</div>
+</div>
 <!-- MODAL: EDITAR/EXCLUIR MOVIMENTAÇÃO -->
-<div class="modal" id="modalMovEdit" aria-hidden="true">
-  <div class="sheet">
-    <div class="sheet-hd">
-      <div class="sheet-title">✏️ Editar movimentação</div>
-      <button class="x" onclick="fecharModal('modalMovEdit')">×</button>
-    </div>
-
-    <div class="sheet-bd">
-      <div class="grid2">
-        <div class="field" style="grid-column:1/-1">
-          <label>Item</label>
-          <input id="meItem" type="text" class="inp" readonly>
-          <div class="hint">Item não pode ser trocado aqui (para manter o vínculo com o estoque). Se precisar trocar, delete e grave outra.</div>
-        </div>
-
-        <div class="field">
-          <label>Quantidade</label>
-          <input id="meQtd" type="number" min="1" class="inp" inputmode="numeric">
-        </div>
-
-        <div class="field">
-          <label>Data/Hora</label>
-          <input id="meQuando" type="datetime-local" class="inp">
-        </div>
-
-        <div class="field">
-          <label>Setor origem</label>
-          <select id="meOrig" class="inp"></select>
-        </div>
-
-        <div class="field">
-          <label>Setor destinatário</label>
-          <select id="meDest" class="inp"></select>
-        </div>
-
-        <div class="field" style="grid-column:1/-1">
-          <label>Observação</label>
-          <input id="meObs" type="text" class="inp" placeholder="Opcional">
-        </div>
-      </div>
-
-      <div class="muted" style="margin-top:10px;font-weight:900" id="meInfo"></div>
-    </div>
-
-    <div class="sheet-ft">
-      <button class="btn ghost" onclick="fecharModal('modalMovEdit')">Cancelar</button>
-      <button class="btn danger" id="btnMovEditDel">🗑️ Deletar</button>
-      <button class="btn primary" id="btnMovEditSalvar">✅ Salvar</button>
-    </div>
-  </div>
+<div aria-hidden="true" class="modal" id="modalMovEdit">
+<div class="sheet">
+<div class="sheet-hd">
+<div class="sheet-title">✏️ Editar movimentação</div>
+<button class="x" onclick="fecharModal('modalMovEdit')">×</button>
 </div>
-
-
+<div class="sheet-bd">
+<div class="grid2">
+<div class="field" style="grid-column:1/-1">
+<label>Item</label>
+<input class="inp" id="meItem" readonly="" type="text"/>
+<div class="hint">Item não pode ser trocado aqui (para manter o vínculo com o estoque). Se precisar trocar, delete e grave outra.</div>
+</div>
+<div class="field">
+<label>Quantidade</label>
+<input class="inp" id="meQtd" inputmode="numeric" min="1" type="number"/>
+</div>
+<div class="field">
+<label>Data/Hora</label>
+<input class="inp" id="meQuando" type="datetime-local"/>
+</div>
+<div class="field">
+<label>Setor origem</label>
+<select class="inp" id="meOrig"></select>
+</div>
+<div class="field">
+<label>Setor destinatário</label>
+<select class="inp" id="meDest"></select>
+</div>
+<div class="field" style="grid-column:1/-1">
+<label>Observação</label>
+<input class="inp" id="meObs" placeholder="Opcional" type="text"/>
+</div>
+</div>
+<div class="muted" id="meInfo" style="margin-top:10px;font-weight:900"></div>
+</div>
+<div class="sheet-ft">
+<button class="btn ghost" onclick="fecharModal('modalMovEdit')">Cancelar</button>
+<button class="btn danger" id="btnMovEditDel">🗑️ Deletar</button>
+<button class="btn primary" id="btnMovEditSalvar">✅ Salvar</button>
+</div>
+</div>
+</div>
 <!-- MODAL: RELATÓRIOS -->
-
-<div class="modal" id="modalRel" aria-hidden="true">
-  <div class="sheet">
-    <div class="mhead">
-      <div>📊 Relatórios</div>
-      <button class="x" data-close="modalRel">&times;</button>
-    </div>
-    <div class="mbar"></div>
-
-    <div class="mbody">
-      <div class="rt-switch" role="tablist" aria-label="Tipos de relatório">
-        <button class="rt-tab active" data-rt="inventario">📦 Inventário</button>
-        <button class="rt-tab" data-rt="baixo">⚠️ Abaixo do mínimo</button>
-        <button class="rt-tab" data-rt="zerados">❌ Zerados</button>
-        <button class="rt-tab" data-rt="classificacao">🏷️ Classificação</button>
-        <button class="rt-tab" data-rt="movsetor">🔁 Mov. por setor</button>
-      </div>
-
-      <!-- Mantido para compatibilidade do JS -->
-      <select id="rTipo" style="display:none">
-        <option value="inventario">Inventário</option>
-        <option value="baixo">Abaixo do mínimo</option>
-        <option value="zerados">Zerados</option>
-        <option value="classificacao">Classificação</option>
-        <option value="movsetor">Movimentações por setor</option>
-      </select>
-
-      <div id="rFiltros" class="group" style="margin-top:12px"></div>
-
-      <div class="twocol" style="margin-top:10px">
-        <button class="btn primary" id="btnGerarRel">✅ Gerar</button>
-        <button class="btn secondary" id="btnPDFRel">📄 Salvar em PDF</button>
-      </div>
-
-      <div id="rOut" style="margin-top:12px"></div>
-    </div>
-
-    <div class="actions">
-      <button class="btn secondary" data-close="modalRel">Fechar</button>
-      <button class="btn secondary" id="btnLimparRel">🧹 Limpar</button>
-    </div>
-  </div>
+<div aria-hidden="true" class="modal" id="modalRel">
+<div class="sheet">
+<div class="mhead">
+<div>📊 Relatórios</div>
+<button class="x" data-close="modalRel">×</button>
 </div>
-
+<div class="mbar"></div>
+<div class="mbody">
+<div aria-label="Tipos de relatório" class="rt-switch" role="tablist"><button class="rt-tab active" data-rt="movgeral">🔁 Mov. Geral</button><button class="rt-tab" data-rt="movsetor">🏢 Mov. por setor</button></div>
+<!-- Mantido para compatibilidade do JS -->
+<select id="rTipo" style="display:none"><option selected="selected" value="movgeral">Movimentações (Geral)</option><option value="movsetor">Movimentações por setor</option></select>
+<div class="group" id="rFiltros" style="margin-top:12px"></div>
+<div class="twocol" style="margin-top:10px">
+<button class="btn primary" id="btnGerarRel">✅ Gerar</button>
+<button class="btn secondary" id="btnPDFRel">📄 Salvar em PDF</button>
+</div>
+<div id="rOut" style="margin-top:12px"></div>
+</div>
+<div class="actions">
+<button class="btn secondary" data-close="modalRel">Fechar</button>
+<button class="btn secondary" id="btnLimparRel">🧹 Limpar</button>
+</div>
+</div>
+</div>
 <!-- MODAL: GESTÃO DE SETORES -->
-<div class="modal" id="modalSet" aria-hidden="true">
-  <div class="sheet">
-    <div class="mhead">
-      <div>🏛️ Gestão de Setores</div>
-      <button class="x" data-close="modalSet">&times;</button>
-    </div>
-    <div class="mbar"></div>
-    <div class="mbody">
-      <div class="group">
-        <label>Buscar setor</label>
-        <input id="sBusca" placeholder="Digite: admin, saúde..." />
-      </div>
-
-      <div id="setGrid" class="grid2" style="margin-top:10px"></div>
-      <div class="muted" style="margin-top:10px;font-weight:800">
+<div aria-hidden="true" class="modal" id="modalSet">
+<div class="sheet">
+<div class="mhead">
+<div>🏛️ Gestão de Setores</div>
+<button class="x" data-close="modalSet">×</button>
+</div>
+<div class="mbar"></div>
+<div class="mbody">
+<div class="group">
+<label>Buscar setor</label>
+<input id="sBusca" placeholder="Digite: admin, saúde...">
+</input></div>
+<div class="grid2" id="setGrid" style="margin-top:10px"></div>
+<div class="muted" style="margin-top:10px;font-weight:800">
         Toque em um setor para ver as movimentações e gerar PDF.
       </div>
-    </div>
-    <div class="actions">
-      <button class="btn secondary" data-close="modalSet">Fechar</button>
-    </div>
-  </div>
 </div>
-
+<div class="actions">
+<button class="btn secondary" data-close="modalSet">Fechar</button>
+</div>
+</div>
+</div>
 <!-- MODAL: DETALHE DO SETOR -->
-<div class="modal" id="modalSetDet" aria-hidden="true">
-  <div class="sheet">
-    <div class="mhead">
-      <div id="sdTitle">🏛️ Setor</div>
-      <button class="x" data-close="modalSetDet">&times;</button>
-    </div>
-    <div class="mbar"></div>
-    <div class="mbody">
-      <div class="twocol">
-        <div class="group" style="margin:0">
-          <label>De</label>
-          <input id="sdDe" type="date" />
-        </div>
-        <div class="group" style="margin:0">
-          <label>Até</label>
-          <input id="sdAte" type="date" />
-        </div>
-      </div>
-
-      <div class="group">
-        <label>Direção</label>
-        <select id="sdDir">
-          <option value="ambos">Entradas + Saídas</option>
-          <option value="entradas">Somente Entradas</option>
-          <option value="saidas">Somente Saídas</option>
-        </select>
-      </div>
-
-      <div class="twocol">
-        <button class="btn primary" id="btnGerarSet">✅ Gerar</button>
-        <button class="btn secondary" id="btnPDFSet">📄 Salvar em PDF</button>
-      </div>
-
-      <div id="sdResumo" class="rt-card" style="margin-top:12px"></div>
-      <div id="sdOut" style="margin-top:12px"></div>
-    </div>
-    <div class="actions">
-      <button class="btn secondary" data-close="modalSetDet">Fechar</button>
-      <button class="btn secondary" id="btnVoltarSet">↩️ Setores</button>
-    </div>
-  </div>
+<div aria-hidden="true" class="modal" id="modalSetDet">
+<div class="sheet">
+<div class="mhead">
+<div id="sdTitle">🏛️ Setor</div>
+<button class="x" data-close="modalSetDet">×</button>
 </div>
-
+<div class="mbar"></div>
+<div class="mbody">
+<div class="twocol">
+<div class="group" style="margin:0">
+<label>De</label>
+<input id="sdDe" type="date">
+</input></div>
+<div class="group" style="margin:0">
+<label>Até</label>
+<input id="sdAte" type="date">
+</input></div>
+</div>
+<div class="group">
+<label>Direção</label>
+<select id="sdDir">
+<option value="ambos">Entradas + Saídas</option>
+<option value="entradas">Somente Entradas</option>
+<option value="saidas">Somente Saídas</option>
+</select>
+</div>
+<div class="twocol">
+<button class="btn primary" id="btnGerarSet">✅ Gerar</button>
+<button class="btn secondary" id="btnPDFSet">📄 Salvar em PDF</button>
+</div>
+<div class="rt-card" id="sdResumo" style="margin-top:12px"></div>
+<div id="sdOut" style="margin-top:12px"></div>
+</div>
+<div class="actions">
+<button class="btn secondary" data-close="modalSetDet">Fechar</button>
+<button class="btn secondary" id="btnVoltarSet">↩️ Setores</button>
+</div>
+</div>
+</div>
 <div class="toast" id="toast"></div>
-
-
 <script>
 
 
@@ -694,62 +636,64 @@ $("rTipo").addEventListener("change",renderFiltrosRel);
 function renderFiltrosRel(){
   const tipo = $("rTipo").value;
   const box = $("rFiltros");
+  const pad = (s)=>escapeHtml(s);
+  const setoresOpts = SETORES.map(s=>`<option value="${pad(s)}">${pad(s)}</option>`).join("");
+
   if(tipo==="movsetor"){
-    const opts = SETORES.map(s=>`<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join("");
     box.innerHTML = `
       <div class="twocol">
-        <div class="group" style="margin:0">
+        <div class="group">
           <label>Setor</label>
-          <select id="rSetor">${opts}</select>
+          <select id="rSetor">${setoresOpts}</select>
         </div>
-        <div class="group" style="margin:0">
+        <div class="group">
           <label>Direção</label>
           <select id="rDir">
-            <option value="ambos">Entradas + Saídas</option>
-            <option value="entradas">Somente Entradas</option>
-            <option value="saidas">Somente Saídas</option>
+            <option value="ambos">Entradas e saídas</option>
+            <option value="entradas">Somente entradas</option>
+            <option value="saidas">Somente saídas</option>
           </select>
         </div>
       </div>
       <div class="twocol">
-        <div class="group" style="margin:0">
-          <label>De</label>
-          <input id="rDe" type="date" />
+        <div class="group">
+          <label>De (dd/mm/aaaa)</label>
+          <input id="rDeBR" placeholder="01/01/2026" inputmode="numeric" />
         </div>
-        <div class="group" style="margin:0">
-          <label>Até</label>
-          <input id="rAte" type="date" />
+        <div class="group">
+          <label>Até (dd/mm/aaaa)</label>
+          <input id="rAteBR" placeholder="31/12/2026" inputmode="numeric" />
         </div>
       </div>
-      <div class="muted" style="font-size:12px;font-weight:800;margin-top:6px">Dica: se não definir datas, mostra tudo.</div>
+      <div class="muted">Dica: filtre por período e gere o PDF.</div>
     `;
-    // defaults: hoje
-    const d = new Date(); const pad=n=>String(n).padStart(2,"0");
-    const hoje = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
-    setTimeout(()=>{
-      const rSetor = document.getElementById("rSetor");
-      if(rSetor) rSetor.value = "ADMINISTRAÇÃO";
-      const rDe = document.getElementById("rDe");
-      const rAte = document.getElementById("rAte");
-      if(rDe) rDe.value = hoje;
-      if(rAte) rAte.value = hoje;
-    },0);
-  } else if(tipo==="zerados"){
-    box.innerHTML = `<div class="muted" style="font-size:12px;font-weight:800">Lista de produtos com estoque atual = 0.</div>`;
-  } else if(tipo==="classificacao"){
-    const cats = categoriasUnicas();
-    const opts = ['<option value="">(Todas)</option>'].concat(cats.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`));
-    box.innerHTML = `
-      <div class="group" style="margin:0">
-        <label>Filtrar classificação</label>
-        <select id="rCat">${opts.join("")}</select>
-      </div>
-    `;
-  } else {
-    box.innerHTML = `<div class="muted" style="font-size:12px;font-weight:800">Sem filtros adicionais para este relatório.</div>`;
+    return;
   }
+
+  box.innerHTML = `
+    <div class="twocol">
+      <div class="group">
+        <label>De (dd/mm/aaaa)</label>
+        <input id="rDeBR" placeholder="01/01/2026" inputmode="numeric" />
+      </div>
+      <div class="group">
+        <label>Até (dd/mm/aaaa)</label>
+        <input id="rAteBR" placeholder="31/12/2026" inputmode="numeric" />
+      </div>
+    </div>
+    <div class="group">
+      <label>Buscar (opcional)</label>
+      <input id="rBusca" placeholder="produto, código, setor..." />
+    </div>
+  `;
 }
 
+
+function brDateTime(dt){
+  const d = (dt instanceof Date) ? dt : new Date(dt);
+  const pad = (n)=>String(n).padStart(2,"0");
+  return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
 function ptbrToDate(s){
   // s: "dd/mm/aaaa, hh:mm:ss" or "dd/mm/aaaa hh:mm"
   if(!s) return null;
@@ -846,188 +790,83 @@ $("btnGerarRel").addEventListener("click",()=>{
   const tipo = $("rTipo").value;
   const out = $("rOut");
 
-  if(tipo==="inventario"){
-    // Similar a softwares de varejo: lista com código, produto, classificação, estoque, mínimo, status, preço
-    const rows = produtos.map(p=>{
-      const st = statusProduto(p);
-      return {
-        "Código": escapeHtml(p.codigo2||p.codigo1||""),
-        "Produto": escapeHtml(p.nome||""),
-        "Classificação": escapeHtml(p.categoria||""),
-        "Atual": String(p.estoqueAtual||0),
-        "Mín": String(p.estoqueMin||0),
-        "Status": `<span class="rt-badge">${escapeHtml(st.txt)}</span>`,
-        "Preço": `R$ ${(Number(p.preco)||0).toFixed(2)}`
-      };
-    });
-    const cols = ["Código","Produto","Classificação","Atual","Mín","Status","Preço"];
-    const table = tableFromRows(cols, rows);
-    const htmlCard = buildReportCard(
-      "Inventário Geral",
-      `Total de produtos: ${produtos.length}`,
-      table
-    );
-    out.innerHTML = htmlCard;
+  const toDate = (br)=>{
+    const m = String(br||"").trim().match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if(!m) return null;
+    return new Date(+m[3], +m[2]-1, +m[1], 0,0,0);
+  };
+  const de = toDate($("rDeBR")?.value);
+  const ate = toDate($("rAteBR")?.value);
+  const ateEnd = ate ? new Date(ate.getFullYear(), ate.getMonth(), ate.getDate(), 23,59,59) : null;
 
-    lastPDFHtml = buildPrintableDoc({
-      title:"Inventário Geral",
-      subtitle:`Total de produtos: ${produtos.length}`,
-      bodyHTML: htmlCard.replace(/class="rt-table"/g,'')
-        .replace(/rt-card/g,'card')
-        .replace(/rt-title/g,'')
-        .replace(/rt-sub/g,'')
-        .replace(/rt-badge/g,'badge')
-        .replace(/rt-table/g,'')
-        .replace(/<table class="rt-table">/g,'<table>')
-    });
-    lastPDFName = "inventario_geral";
-    toast("✅ Relatório gerado");
-    return;
-  }
+  const norm = (s)=>String(s||"").toLowerCase();
+  const busca = norm($("rBusca")?.value);
 
-  if(tipo==="baixo"){
-    const list = produtos.filter(p=> (p.estoqueAtual||0) > 0 && (p.estoqueAtual||0) <= (p.estoqueMin||0));
-    const rows = list
-      .sort((a,b)=>(a.estoqueAtual||0)-(b.estoqueAtual||0))
-      .map(p=>({
-        "Código": escapeHtml(p.codigo2||p.codigo1||""),
-        "Produto": escapeHtml(p.nome||""),
-        "Classificação": escapeHtml(p.categoria||""),
-        "Atual/Mín": `<b>${p.estoqueAtual||0}</b> / ${p.estoqueMin||0}`,
-        "Preço": `R$ ${(Number(p.preco)||0).toFixed(2)}`
-      }));
-    const cols = ["Código","Produto","Classificação","Atual/Mín","Preço"];
-    const table = tableFromRows(cols, rows);
-    const htmlCard = buildReportCard(
-      "Produtos abaixo do mínimo",
-      `Total: ${list.length}`,
-      table
-    );
-    out.innerHTML = htmlCard;
-
-    lastPDFHtml = buildPrintableDoc({
-      title:"Produtos abaixo do mínimo",
-      subtitle:`Total: ${list.length}`,
-      bodyHTML: htmlCard.replace(/rt-card/g,'card').replace(/rt-table/g,'')
-        .replace(/<table class="rt-table">/g,'<table>')
-    });
-    lastPDFName = "abaixo_minimo";
-    toast("✅ Relatório gerado");
-    return;
-  }
-
-  if(tipo==="zerados"){
-    const list = produtos.filter(p=> (p.estoqueAtual||0) === 0);
-    const rows = list.map(p=>({
-      "Código": escapeHtml(p.codigo2||p.codigo1||""),
-      "Produto": escapeHtml(p.nome||""),
-      "Classificação": escapeHtml(p.categoria||""),
-      "Mín": String(p.estoqueMin||0),
-      "Preço": `R$ ${(Number(p.preco)||0).toFixed(2)}`
-    }));
-    const cols = ["Código","Produto","Classificação","Mín","Preço"];
-    const table = tableFromRows(cols, rows);
-    const htmlCard = buildReportCard(
-      "Produtos zerados",
-      `Total: ${list.length}`,
-      table
-    );
-    out.innerHTML = htmlCard;
-
-    lastPDFHtml = buildPrintableDoc({
-      title:"Produtos zerados",
-      subtitle:`Total: ${list.length}`,
-      bodyHTML: htmlCard.replace(/rt-card/g,'card').replace(/rt-table/g,'')
-        .replace(/<table class="rt-table">/g,'<table>')
-    });
-    lastPDFName = "produtos_zerados";
-    toast("✅ Relatório gerado");
-    return;
-  }
-
-  if(tipo==="classificacao"){
-    const cat = document.getElementById("rCat")?.value || "";
-    const filtered = cat ? produtos.filter(p=>p.categoria===cat) : produtos;
-    // agrupado por classificação com subtotal, comum em softwares de materiais (seções por categoria)
-    const groups = {};
-    for(const p of filtered){
-      const c = p.categoria || "SEM CLASSIFICAÇÃO";
-      if(!groups[c]) groups[c] = [];
-      groups[c].push(p);
+  let list = movs.slice().reverse().filter(m=>{
+    const dt = m.quandoISO ? new Date(m.quandoISO) : ptbrToDate(m.quando);
+    if(de && (!dt || dt<de)) return false;
+    if(ateEnd && (!dt || dt>ateEnd)) return false;
+    if(busca){
+      const hay = `${m.produto_nome||""} ${m.codigo2||""} ${m.origem||""} ${m.destino||""} ${m.obs||""}`.toLowerCase();
+      if(!hay.includes(busca)) return false;
     }
-    const parts = Object.keys(groups).sort((a,b)=>a.localeCompare(b,'pt-BR')).map(c=>{
-      const rows = groups[c].map(p=>({
-        "Código": escapeHtml(p.codigo2||p.codigo1||""),
-        "Produto": escapeHtml(p.nome||""),
-        "Atual": String(p.estoqueAtual||0),
-        "Mín": String(p.estoqueMin||0),
-        "Preço": `R$ ${(Number(p.preco)||0).toFixed(2)}`
-      }));
-      const table = tableFromRows(["Código","Produto","Atual","Mín","Preço"], rows);
-      return `<div class="rt-card" style="margin-bottom:12px">
-        <div class="rt-title">🏷️ ${escapeHtml(c)}</div>
-        <div class="rt-sub">Itens: ${groups[c].length}</div>
-        ${table}
-      </div>`;
-    }).join("");
-    const title = cat ? `Produtos por Classificação • ${cat}` : "Produtos por Classificação";
-    out.innerHTML = parts || `<div class="rt-card"><div class="rt-title">${escapeHtml(title)}</div><div class="rt-sub">Nenhum item.</div></div>`;
+    return true;
+  });
 
-    lastPDFHtml = buildPrintableDoc({
-      title: title,
-      subtitle: `Total: ${filtered.length}`,
-      bodyHTML: out.innerHTML.replace(/rt-card/g,'card').replace(/rt-table/g,'')
-        .replace(/<table class="rt-table">/g,'<table>')
-    });
-    lastPDFName = "por_classificacao";
-    toast("✅ Relatório gerado");
-    return;
-  }
-
+  let subt = "Registro de entradas e saídas";
   if(tipo==="movsetor"){
-    const setor = document.getElementById("rSetor")?.value || "ADMINISTRAÇÃO";
-    const dir = document.getElementById("rDir")?.value || "ambos";
-    const deISO = document.getElementById("rDe")?.value || "";
-    const ateISO = document.getElementById("rAte")?.value || "";
-    const de = deISO ? new Date(deISO+"T00:00:00") : null;
-    const ate = ateISO ? new Date(ateISO+"T23:59:59") : null;
-
-    const list = movs.filter(m=>{
-      const dt = ptbrToDate(m.quando);
-      const okd = !de || (dt && dt>=de);
-      const oka = !ate || (dt && dt<=ate);
-      let oks = (m.origem===setor || m.destino===setor);
-      if(dir==="entradas") oks = (m.destino===setor);
-      if(dir==="saidas") oks = (m.origem===setor);
-      return okd && oka && oks;
-    }).slice().reverse();
-
-    const rows = list.map(m=>({
-      "Quando": escapeHtml(m.quando||""),
-      "Produto": escapeHtml(m.produto_nome||""),
-      "Classificação": escapeHtml(m.categoria||""),
-      "Qtd": `<b>${m.qtd}</b>`,
-      "Origem": escapeHtml(m.origem||""),
-      "Destino": escapeHtml(m.destino||""),
-      "Obs": escapeHtml(m.obs||"")
-    }));
-    const cols = ["Quando","Produto","Classificação","Qtd","Origem","Destino","Obs"];
-    const table = tableFromRows(cols, rows);
-
-    const subt = `Setor: ${setor} • ${deISO||"—"} a ${ateISO||"—"} • Registros: ${list.length}`;
-    const htmlCard = buildReportCard("Movimentações por setor", subt, table);
-    out.innerHTML = htmlCard;
-
-    lastPDFHtml = buildPrintableDoc({
-      title:"Movimentações por setor",
-      subtitle: subt,
-      bodyHTML: htmlCard.replace(/rt-card/g,'card').replace(/rt-table/g,'')
-        .replace(/<table class="rt-table">/g,'<table>')
+    const setor = $("rSetor")?.value || "ALMOXARIFADO";
+    const dir = $("rDir")?.value || "ambos";
+    subt = `${setor} • ${$("rDir")?.selectedOptions?.[0]?.textContent||""}`;
+    list = list.filter(m=>{
+      let ok = (m.origem===setor || m.destino===setor);
+      if(dir==="entradas") ok = (m.destino===setor);
+      if(dir==="saidas") ok = (m.origem===setor);
+      return ok;
     });
-    lastPDFName = "mov_por_setor";
-    toast("✅ Relatório gerado");
-    return;
   }
+
+  const titulo = (tipo==="movsetor") ? `Movimentações por Setor` : `Movimentações (Geral)`;
+  const periodo = `${$("rDeBR")?.value||"—"} até ${$("rAteBR")?.value||"—"}`;
+
+  const rows = list.map(m=>{
+    const dt = m.quandoISO ? new Date(m.quandoISO) : ptbrToDate(m.quando);
+    const quando = dt ? brDateTime(dt) : (m.quando||"");
+    return `
+      <tr>
+        <td>${escapeHtml(quando)}</td>
+        <td><b>${escapeHtml(m.produto_nome||"")}</b><div class="muted">Código: ${escapeHtml(m.codigo2||"")}</div></td>
+        <td>${escapeHtml(m.origem||"")}</td>
+        <td>${escapeHtml(m.destino||"")}</td>
+        <td style="text-align:right"><b>${escapeHtml(String(m.qtd||0))}</b></td>
+        <td>${escapeHtml(m.obs||"")}</td>
+      </tr>
+    `;
+  }).join("");
+
+  const body = `
+    <div class="rel-card">
+      <div class="rel-top">
+        <div>
+          <div class="rel-title">📄 ${escapeHtml(titulo)}</div>
+          <div class="rel-sub">${escapeHtml(subt)} • Período: ${escapeHtml(periodo)}</div>
+        </div>
+        <div class="rel-chip">${list.length} registros</div>
+      </div>
+
+      <table class="rel-table">
+        <thead>
+          <tr>
+            <th>Data/Hora</th><th>Produto</th><th>Origem</th><th>Destino</th><th style="text-align:right">Qtd</th><th>Obs</th>
+          </tr>
+        </thead>
+        <tbody>${rows || `<tr><td colspan="6" class="muted" style="padding:14px">Nenhuma movimentação no período.</td></tr>`}</tbody>
+      </table>
+    </div>
+  `;
+
+  out.innerHTML = body;
+  lastPDFHtml = buildPDFHtml(titulo, subt, periodo, body);
 });
 
 $("btnPDFRel").addEventListener("click",()=>{
@@ -1286,7 +1125,13 @@ function parseInputJSON(data){
     if(data.length>=4 && data[1]==="produtos" && String(data[2]).trim()===":" && Array.isArray(data[3])) return data[3];
     return data;
   }
-  if(data && typeof data==="object" && Array.isArray(data.produtos)) return data.produtos;
+  if(data && typeof data==="object"){
+    if(Array.isArray(data.produtos)) return data.produtos;
+    if(Array.isArray(data.Produtos)) return data.Produtos;
+    if(Array.isArray(data.itens)) return data.itens;
+    if(Array.isArray(data.items)) return data.items;
+    if(Array.isArray(data.data)) return data.data;
+  }
   return null;
 }
 
@@ -1454,7 +1299,8 @@ $("btnDelProd").addEventListener("click",()=>{
       const r = new FileReader();
       r.onload = ()=>{
         try{
-          const data = JSON.parse(r.result);
+          const raw = String(r.result || "").replace(/^\uFEFF/, "").trim();
+          const data = JSON.parse(raw);
 
           // Aceita: [ ... ], {produtos:[...]}, ou formato antigo especial
           const arr = parseInputJSON(data);
@@ -1479,10 +1325,10 @@ $("btnDelProd").addEventListener("click",()=>{
           updateLinkedStatus();
         }catch(err){
           console.error("Import JSON error:", err);
-          toast("❌ Erro ao importar (JSON inválido ou formato inesperado)");
+          toast("❌ Erro ao importar: " + (err && err.message ? err.message : "falha"));
         }
       };
-      r.readAsText(file);
+      r.readAsText(file, "utf-8");
       e.target.value="";
     });
   }
@@ -1768,23 +1614,12 @@ $("btnGravarMov")?.addEventListener("click",()=>{
 
   const p = produtos[movProdutoIndex];
 
-  if(origem==="ALMOXARIFADO"){
-    if((p.estoqueAtual||0) < qtd){ toast("❌ Estoque insuficiente no ALMOX"); return; }
-    p.estoqueAtual -= qtd;
-    const al = ensureAloc(p);
-    al[destino] = (Number(al[destino])||0) + qtd;
-  }else{
-    const al = ensureAloc(p);
-    const saldo = Number(al[origem])||0;
-    if(saldo < qtd){ toast("❌ Saldo insuficiente no setor origem"); return; }
-    al[origem] = saldo - qtd;
-    al[destino] = (Number(al[destino])||0) + qtd;
-  }
-
   const quandoRaw = $("mQuando").value;
-  const quando = quandoRaw ? new Date(quandoRaw).toLocaleString("pt-BR") : new Date().toLocaleString("pt-BR");
+  const dt = quandoRaw ? new Date(quandoRaw) : new Date();
+  const quandoISO = dt.toISOString();
+  const quando = brDateTime(dt);
 
-  movs.push({
+  const mov = {
     id: crypto?.randomUUID ? crypto.randomUUID() : String(Date.now())+"-"+Math.random().toString(16).slice(2),
     produto_idx: movProdutoIndex,
     produto_nome: p.nome,
@@ -1792,8 +1627,25 @@ $("btnGravarMov")?.addEventListener("click",()=>{
     categoria: p.categoria,
     qtd, origem, destino,
     obs: $("mObs").value || "",
-    quando
-  });
+    quando,
+    quandoISO
+  };
+
+  const r = applyMovToStock(mov);
+  if(!r.ok){ toast("❌ "+(r.msg||"Falha ao aplicar")); return; }
+
+  movs.push(mov);
+
+  save();
+  render();
+  renderMovList();
+  toast("✅ Movimentação gravada");
+
+  $("mItem").value = "";
+  $("mObs").value = "";
+  $("mQtd").value = "1";
+  movProdutoIndex = -1;
+});
 
   save();
   render();          // atualiza estoque na tela
@@ -1875,14 +1727,13 @@ function revertMov(m){
   const p = produtos[idx];
   const qtd = Math.max(1, Number(m.qtd)||1);
   if(m.origem==="ALMOXARIFADO"){
-    // devolve ao almox e retira do destino
     p.estoqueAtual = (Number(p.estoqueAtual)||0) + qtd;
     const al = ensureAloc(p);
-    al[m.destino] = Math.max(0, (Number(al[m.destino])||0) - qtd);
+    al[m.destino] = (Number(al[m.destino])||0) - qtd;
   }else{
     const al = ensureAloc(p);
     al[m.origem] = (Number(al[m.origem])||0) + qtd;
-    al[m.destino] = Math.max(0, (Number(al[m.destino])||0) - qtd);
+    al[m.destino] = (Number(al[m.destino])||0) - qtd;
   }
   return {ok:true};
 }
@@ -1896,15 +1747,14 @@ function applyMovToStock(m){
   if(m.origem===m.destino) return {ok:false, msg:"Origem = destino"};
 
   if(m.origem==="ALMOXARIFADO"){
-    if((Number(p.estoqueAtual)||0) < qtd) return {ok:false, msg:"Estoque insuficiente no ALMOX"};
+    // Permite negativo (inventário posterior)
     p.estoqueAtual = (Number(p.estoqueAtual)||0) - qtd;
     const al = ensureAloc(p);
     al[m.destino] = (Number(al[m.destino])||0) + qtd;
   }else{
     const al = ensureAloc(p);
-    const saldo = Number(al[m.origem])||0;
-    if(saldo < qtd) return {ok:false, msg:"Saldo insuficiente no setor origem"};
-    al[m.origem] = saldo - qtd;
+    // Permite negativo no setor também
+    al[m.origem] = (Number(al[m.origem])||0) - qtd;
     al[m.destino] = (Number(al[m.destino])||0) + qtd;
   }
   return {ok:true};
@@ -1931,8 +1781,8 @@ function movToDatetimeLocal(quando){
 }
 
 function formatWhenFromInput(v){
-  if(!v) return new Date().toLocaleString("pt-BR");
-  return new Date(v).toLocaleString("pt-BR");
+  if(!v) return brDateTime(new Date());
+  return brDateTime(new Date(v));
 }
 
 function openMovEditById(id){
@@ -1981,7 +1831,9 @@ function commitMovEdit(action){
   updated.origem = $("meOrig").value;
   updated.destino = $("meDest").value;
   updated.obs = $("meObs").value || "";
-  updated.quando = formatWhenFromInput($("meQuando").value);
+  const dt2 = $("meQuando").value ? new Date($("meQuando").value) : new Date();
+  updated.quandoISO = dt2.toISOString();
+  updated.quando = brDateTime(dt2);
 
   // 1) reverte antigo
   const r1 = revertMov(old);
