@@ -1758,11 +1758,23 @@ async function deleteNoteRecord(noteId){
 }
 function buildNotasReport(){
   const notasFiltradas = getNotasFiltered();
-  const filtrosTxt = [$("hnIni").value ? `De: <b>${escapeHtml($("hnIni").value)}</b>` : null, $("hnFim").value ? `Até: <b>${escapeHtml($("hnFim").value)}</b>` : null, $("hnEmp").value.trim() ? `Fornecedor: <b>${escapeHtml($("hnEmp").value.trim())}</b>` : null, $("hnNF")?.value?.trim() ? `NF: <b>${escapeHtml($("hnNF").value.trim())}</b>` : null, $("hnProd").value.trim() ? `Produto: <b>${escapeHtml($("hnProd").value.trim())}</b>` : null].filter(Boolean).join(" • ") || "Sem filtros";
-  const qtdTotal = notasFiltradas.reduce((s,n)=>s+noteQtdTotal(n),0);
-  const valorTotal = notasFiltradas.reduce((s,n)=>s+noteValorTotal(n),0);
-  const body = `<div class="kpiRow"><div class="kpi"><div class="k">Notas</div><div class="v">${fmtNum(notasFiltradas.length)}</div></div><div class="kpi"><div class="k">Qtd total</div><div class="v">${fmtNum(qtdTotal)}</div></div><div class="kpi"><div class="k">Valor total</div><div class="v">${fmtMoney(valorTotal)}</div></div></div><div style="margin:10px 0;color:#5b607a;font-size:12px">${filtrosTxt}</div><table class="t"><thead><tr><th>Data</th><th>Fornecedor</th><th>NF/Série</th><th>Itens</th><th>Qtd total</th><th>Valor total</th><th>Produtos</th></tr></thead><tbody>${notasFiltradas.map(n=>`<tr><td>${escapeHtml(toInputDate(n.dhEmiISO||n.dhEmi||n.data||""))}</td><td>${escapeHtml(n.fornecedor||"")}</td><td>${escapeHtml(`${n.nNF||""} / ${n.serie||""}`)}</td><td style="text-align:right">${fmtNum((n.itens||[]).length)}</td><td style="text-align:right">${fmtNum(noteQtdTotal(n))}</td><td style="text-align:right">${fmtMoney(noteValorTotal(n))}</td><td>${escapeHtml((n.itens||[]).slice(0,4).map(it=>it.nome||"").filter(Boolean).join(" • "))}${(n.itens||[]).length>4?" …":""}</td></tr>`).join("")}</tbody></table>`;
-  return buildPrintableDoc({ title: "Gerenciamento de Notas (NF-e)", subtitle: "Relatório consolidado das notas filtradas", bodyHTML: `<style>.kpiRow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:10px 0}.kpi{border:1px solid #e7e9f4;border-radius:14px;padding:10px;background:#fff}.k{color:#5b607a;font-size:12px}.v{font-weight:800;font-size:16px;margin-top:4px}table.t{width:100%;border-collapse:collapse;margin-top:10px}.t th,.t td{padding:8px 10px;border-bottom:1px solid #eef0f7;text-align:left;vertical-align:top;font-size:12px}.t th{background:#f6f7fb}</style>${body}` });
+  const filtrosTxt = [$("hnIni").value ? `Data inicial: <b>${escapeHtml($("hnIni").value)}</b>` : null, $("hnFim").value ? `Data final: <b>${escapeHtml($("hnFim").value)}</b>` : null].filter(Boolean).join(" • ") || "Data: todas as notas";
+  const body = `
+    <div style="margin:10px 0 14px 0;color:#4f556f;font-size:12px;font-weight:700">${filtrosTxt}</div>
+    <table class="t">
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Número da nota</th>
+          <th>Fornecedor</th>
+          <th style="text-align:right">Valor</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${notasFiltradas.map(n=>`<tr><td>${escapeHtml(toInputDate(n.dhEmiISO||n.dhEmi||n.data||""))}</td><td>${escapeHtml(String(n.nNF||""))}</td><td>${escapeHtml(n.fornecedor||"")}</td><td style="text-align:right">${fmtMoney(noteValorTotal(n))}</td></tr>`).join("")}
+      </tbody>
+    </table>`;
+  return buildPrintableDoc({ title: "Gerenciamento de Notas (NF-e)", subtitle: "Data, número da nota, fornecedor e valor", bodyHTML: `<style>table.t{width:100%;border-collapse:collapse;margin-top:10px}.t th,.t td{padding:8px 10px;border-bottom:1px solid #eef0f7;text-align:left;vertical-align:top;font-size:12px}.t th{background:#f6f7fb}</style>${body}` });
 }
 function downloadBlob(blob, filename){
   const url = URL.createObjectURL(blob);
@@ -4048,21 +4060,10 @@ function render(){
     `;
     card.setAttribute('role','button');
     card.tabIndex = 0;
-    card.title = 'Abra com duplo clique ou duplo toque';
     const open = ()=>openEdit(p);
-    let lastTap = 0;
-    card.addEventListener('dblclick', (e)=>{ e.preventDefault(); open(); });
-    card.addEventListener('touchend', (e)=>{
-      e.preventDefault();
-      const now = Date.now();
-      const delta = now - lastTap;
-      lastTap = now;
-      if(delta > 0 && delta < 380){
-        open();
-      } else {
-        toast('Toque duas vezes para abrir o produto');
-      }
-    }, {passive:false});
+    card.addEventListener('click', open);
+    card.addEventListener('pointerup', (e)=>{ if(e.pointerType==='touch' || e.pointerType==='pen') open(); });
+    card.addEventListener('touchend', (e)=>{ e.preventDefault(); open(); }, {passive:false});
     card.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' ') { e.preventDefault(); open(); } });
     grid.appendChild(card);
   });
