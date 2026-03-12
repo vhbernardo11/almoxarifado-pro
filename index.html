@@ -4645,7 +4645,8 @@ function addDraftMovItem(){
     if(movSearchResults.length){ selectMovProduto(movSearchResults[Math.max(0,movSugIndex)]); }
     else { toast("⚠️ Selecione um item"); return; }
   }
-  const qtd = Math.max(1, parseInt($("mQtd").value,10)||1);
+  const qtdInput = $("mQtd").value.trim();
+  const qtd = qtdInput ? Math.max(1, parseInt(qtdInput, 10) || 1) : 1;
   const origem = $("mOrig").value;
   const destino = $("mDest").value;
   if(origem===destino){ toast("⚠️ Origem = destino"); return; }
