@@ -16,7 +16,7 @@ const DB_FILE = path.join(DATA_DIR, 'produtos_db.json');
 
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 const adapter = new JSONFile(DB_FILE);
-const db = new Low(adapter);
+const db = new Low(adapter, { produtos: [] });
 
 async function ensureDB() {
   await db.read();
