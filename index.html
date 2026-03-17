@@ -849,8 +849,8 @@ box-shadow:0 14px 40px rgba(0,0,0,.45);
 <div class="card" style="margin:0 0 14px 0;background:rgba(255,255,255,.04)">
   <div class="muted" style="font-weight:900;margin-bottom:10px">Adicionar itens ao lançamento</div>
   <div class="group">
-    <label>Produto (digite código, nome, categoria)</label>
-    <input autocomplete="off" id="mItem" placeholder="Ex.: sulfite, 100107, martelo..."/>
+    <label>Produto (digite código de 7 dígitos, nome ou classificação)</label>
+    <input autocomplete="off" id="mItem" placeholder="Ex.: 3011004, sulfite, martelo..."/>
     <div class="muted" id="mSearchMeta" style="margin-top:6px">Digite para pesquisar. Você pode usar ↑ ↓ PgUp PgDn Enter e Esc.</div>
     <div id="mSug" style="display:none; margin-top:8px; border:1px solid rgba(255,255,255,.22); border-radius:14px; overflow:auto; max-height:320px; background:#0f1530;"></div>
   </div>
@@ -5369,16 +5369,18 @@ function sortMovResults(q){
   const ql = String(q||"").trim().toLowerCase();
   return produtos.map((p,idx)=>{
     const nome = String(p.nome||"");
+    const codigoNovo = String(p.codigo_almox_7 || "");
+    const codigoPreferido = String(getCodigoProduto(p) || "");
     const codigo1 = String(p.codigo1||"");
     const codigo2 = String(p.codigo2||"");
     const cat = String(getClassificacaoProduto(p, 'path')||"");
-    const hay = `${nome} ${codigo1} ${codigo2} ${cat}`.toLowerCase();
+    const hay = `${nome} ${codigoNovo} ${codigoPreferido} ${codigo1} ${codigo2} ${cat}`.toLowerCase();
     let score = 0;
     if(!ql) score = 1;
     else {
-      if(nome.toLowerCase() === ql || codigo1.toLowerCase() === ql || codigo2.toLowerCase() === ql) score += 120;
+      if(nome.toLowerCase() === ql || codigoNovo.toLowerCase() === ql || codigoPreferido.toLowerCase() === ql || codigo1.toLowerCase() === ql || codigo2.toLowerCase() === ql) score += 150;
       if(nome.toLowerCase().startsWith(ql)) score += 60;
-      if(codigo1.toLowerCase().startsWith(ql) || codigo2.toLowerCase().startsWith(ql)) score += 90;
+      if(codigoNovo.toLowerCase().startsWith(ql) || codigoPreferido.toLowerCase().startsWith(ql) || codigo1.toLowerCase().startsWith(ql) || codigo2.toLowerCase().startsWith(ql)) score += 110;
       if(hay.includes(ql)) score += 25;
       if(cat.toLowerCase().includes(ql)) score += 5;
     }
@@ -5508,7 +5510,7 @@ function renderMovDraftList(){
     const alerta = item.qtd > disponivel ? `<span style="color:#fecaca;font-weight:900">Saldo insuficiente</span>` : `<span style="color:#bbf7d0;font-weight:900">OK</span>`;
     return `<tr>
       <td style="padding:10px">${pos+1}</td>
-      <td style="padding:10px"><div style="font-weight:900">${escapeHtml(p.nome||'-')}</div><div class="muted">Cód.: ${escapeHtml(getCodigoProduto(p))} • ${escapeHtml(p.categoria||'')}</div></td>
+      <td style="padding:10px"><div style="font-weight:900">${escapeHtml(p.nome||'-')}</div><div class="muted">Cód.: ${escapeHtml(getCodigoProduto(p))} • ${escapeHtml(getClassificacaoProduto(p, 'path')||'')}</div></td>
       <td style="padding:10px">${escapeHtml(origem)} → ${escapeHtml(destino||'-')}</td>
       <td style="padding:10px"><input type="number" min="1" value="${item.qtd}" data-draft-qtd="${pos}" style="width:92px;background:#fff;color:#111;border-radius:10px;border:1px solid #b6c2ff;padding:8px;font-weight:800"></td>
       <td style="padding:10px"><b>${disponivel}</b></td>
