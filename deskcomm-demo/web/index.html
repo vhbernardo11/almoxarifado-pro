@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DeskComm | Piloto Fictício</title>
+<style>
+:root{color-scheme:dark;font:15px system-ui,-apple-system,sans-serif;color:#e6edf7;background:#0d1420}
+*{box-sizing:border-box}body{margin:0}button{font:inherit;cursor:pointer}
+.app{display:flex;min-height:100vh}.menu{background:#101b2b;width:215px;flex-shrink:0;border-right:1px solid #29364a;padding:24px 14px}
+.logo{font-size:21px;font-weight:800;margin:0 8px 26px}.logo span{background:#d9ff72;color:#13210e;border-radius:8px;padding:5px 10px;margin-right:7px}
+.menu button{display:block;width:100%;background:transparent;color:#a6b7c9;border:0;text-align:left;padding:13px;border-radius:10px;margin:7px 0}
+.menu button.active,.menu button:hover{background:#25354a;color:white}.menu small{display:block;margin:30px 8px;color:#97a8b9;line-height:1.6}
+main{flex:1;padding:26px;min-width:0;max-width:1500px}.top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+h1{font-size:26px;margin:4px 0 16px}.muted{color:#97aabc}.flag{background:#314526;color:#e0ffa0;padding:8px 12px;border-radius:22px;font-size:12px;font-weight:800}
+.notice{background:#382d19;border:1px solid #8a6a2e;border-radius:12px;padding:12px;margin:14px 0 24px;font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat,.panel,.deal{background:#172438;border:1px solid #2e4058;border-radius:13px;padding:16px}
+.stat strong{display:block;font-size:26px;margin-top:8px}.stat small{color:#a1b2c7}
+h2{font-size:19px;margin:28px 0 14px}.board{display:grid;grid-template-columns:repeat(5,minmax(165px,1fr));gap:10px;overflow-x:auto;padding-bottom:12px}
+.lane{background:#152032;padding:10px;border:1px solid #28374e;border-radius:13px;min-height:230px}
+.lane h3{font-size:12px;color:#c3d3e9;display:flex;justify-content:space-between;padding:2px 4px}.count{background:#28374e;border-radius:30px;padding:1px 8px}
+.deal{margin-bottom:9px;background:#1e2f48;padding:13px}.deal b{font-size:13px}.deal p{font-size:12px;color:#a7bad2;margin:8px 0}.money{font-weight:800;margin:12px 0}
+.btn{border:1px solid #5f7996;border-radius:8px;background:#273d56;color:#ecf3fc;padding:8px 10px;font-size:12px;font-weight:700}.btn:focus-visible,.menu button:focus-visible{outline:3px solid #e3f974}
+.row{display:flex;justify-content:space-between;gap:10px;align-items:center}.stack{display:grid;gap:10px}
+.cols{display:grid;grid-template-columns:240px 1fr;gap:12px}.people button{display:block;width:100%;text-align:left;background:#1c2d42;color:white;padding:13px;border:1px solid #2f435f;border-radius:9px;margin:6px 0}
+.people button.selected{border-color:#d9ff72}.thread{min-height:250px}.bubble{background:#2c3d55;padding:13px;margin:12px 0;border-radius:14px;max-width:78%;font-size:14px}.bubble.out{margin-left:auto;background:#355332}
+input{background:#111b2c;color:white;border:1px solid #45576c;border-radius:8px;padding:11px;width:100%;font:inherit}.compose{display:flex;gap:8px;margin-top:12px}.hidden{display:none}
+@media(max-width:950px){.stats{grid-template-columns:repeat(2,1fr)}.board{grid-template-columns:repeat(5,180px)}}@media(max-width:690px){.app{display:block}.menu{width:auto;padding:14px}.logo{margin-bottom:8px}.menu button{width:auto;display:inline-block}.menu small{display:none}main{padding:14px}.cols{grid-template-columns:1fr}.people{display:flex;overflow:auto;gap:5px}.people button{min-width:135px}.stats{gap:8px}.stat{padding:12px}}
+</style></head><body>
+<div class="app"><aside class="menu"><div class="logo"><span>D</span> DeskComm</div>
+<button data-page="overview" class="active">▦ Visão geral</button>
+<button data-page="inbox">◉ Conversas</button>
+<button data-page="knowledge">▤ Conhecimento</button>
+<small>Protótipo offline<br>Empresa e contatos fictícios<br>Sem envio de mensagens</small>
+</aside><main><div class="top"><div><div class="muted">Oficina Exemplo • demonstração</div><h1 id="title">Painel comercial</h1></div><span class="flag">SIMULAÇÃO SEGURA</span></div>
+<div class="notice"><b>Laboratório:</b> esta página não se conecta ao Supabase, IA ou WhatsApp. Não envia informações nem salva alterações.</div>
+<section id="overview"><div class="stats">
+<div class="stat"><small>Oportunidades</small><strong id="n">5</strong></div>
+<div class="stat"><small>Em negociação (simulado)</small><strong id="sum">R$ 0</strong></div>
+<div class="stat"><small>Ganhos fictícios</small><strong id="won">1</strong></div>
+<div class="stat"><small>Mensagens demonstrativas</small><strong id="messages">6</strong></div></div>
+<div class="row"><h2>Funil de vendas</h2><button class="btn" id="reset">Restaurar dados</button></div>
+<div class="board" id="board"></div></section>
+<section id="inbox" class="hidden"><h2>Caixa de entrada simulada</h2><div class="cols">
+<div class="people" id="people"></div><div class="panel"><h3 id="chatname"></h3><div class="thread" id="thread"></div>
+<div class="compose"><input id="reply" aria-label="Resposta fictícia" placeholder="Escreva somente uma resposta simulada"><button class="btn" id="send">Simular</button></div></div></div></section>
+<section id="knowledge" class="hidden"><h2>Base de respostas fictícias</h2><div id="kb" class="stack"></div></section>
+<p class="muted" style="margin-top:35px;font-size:12px">Protótipo independente. Não é a aplicação oficial DeskComm. Código e dados desta página são apenas exemplos para homologação.</p>
+</main></div><script>
+const original=[
+{who:"Cliente Fictício 01",title:"Avaliação de freios",stage:0,value:18000},
+{who:"Cliente Fictício 02",title:"Troca de óleo",stage:1,value:25000},
+{who:"Cliente Fictício 03",title:"Revisão preventiva",stage:2,value:65000},
+{who:"Cliente Fictício 04",title:"Serviço de suspensão",stage:3,value:120000},
+{who:"Cliente Fictício 05",title:"Revisão de viagem",stage:4,value:43000}];
+const seedMessages=[
+{who:"Cliente Fictício 01",out:false,msg:"Meu carro está fazendo barulho quando freio. Posso pedir uma avaliação?"},
+{who:"Cliente Fictício 01",out:true,msg:"Registramos sua solicitação. Um atendente precisa confirmar disponibilidade."},
+{who:"Cliente Fictício 02",out:false,msg:"Gostaria de saber como funciona a troca de óleo."},
+{who:"Cliente Fictício 03",out:false,msg:"Posso solicitar um orçamento de revisão?"},
+{who:"Cliente Fictício 04",out:false,msg:"Vocês conseguem verificar a suspensão?"},
+{who:"Cliente Fictício 05",out:true,msg:"Seu pedido foi registrado. A equipe confirmará o horário."}];
+const knowledge=[
+["Horário de exemplo","Segunda a sexta, das 8h às 18h. Horário fictício para fins de demonstração."],
+["Orçamentos","Valores são exemplos. A equipe humana deve validar preços e disponibilidade."],
+["Agendamentos","Não confirmar compromissos sem acesso a um calendário confiável."]
+];
+let deals=original.map(x=>({...x})),msgs=seedMessages.map(x=>({...x})),selected=original[0].who;
+const stages=["Novo","Qualificação","Orçamento","Negociação","Ganho"];
+const money=n=>(n/100).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+function el(tag,cls,txt){const e=document.createElement(tag);if(cls)e.className=cls;if(txt!==undefined)e.textContent=txt;return e}
+function drawBoard(){const b=document.getElementById("board");b.replaceChildren();stages.forEach((name,stage)=>{
+ const lane=el("div","lane");const h=el("h3","",name);h.append(el("span","count",String(deals.filter(x=>x.stage===stage).length)));lane.append(h);
+ deals.filter(x=>x.stage===stage).forEach(d=>{const card=el("div","deal");card.append(el("b","",d.title),el("p","",d.who),el("div","money",money(d.value)));
+ if(stage<4){const next=el("button","btn","Próxima etapa →");next.onclick=()=>{d.stage++;render()};card.append(next)}lane.append(card)});b.append(lane);
+ });document.getElementById("n").textContent=deals.length;document.getElementById("sum").textContent=money(deals.filter(x=>x.stage!==4).reduce((a,x)=>a+x.value,0));document.getElementById("won").textContent=deals.filter(x=>x.stage===4).length;document.getElementById("messages").textContent=msgs.length;}
+function drawChat(){const p=document.getElementById("people");p.replaceChildren();original.forEach(d=>{const b=el("button",d.who===selected?"selected":"",d.who);b.onclick=()=>{selected=d.who;drawChat()};p.append(b)});
+document.getElementById("chatname").textContent=selected;const t=document.getElementById("thread");t.replaceChildren();
+msgs.filter(m=>m.who===selected).forEach(m=>t.append(el("div","bubble"+(m.out?" out":""),m.msg)));}
+function render(){drawBoard();drawChat()}
+document.querySelectorAll("[data-page]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-page]").forEach(x=>x.classList.toggle("active",x===b));["overview","inbox","knowledge"].forEach(id=>document.getElementById(id).classList.toggle("hidden",id!==b.dataset.page));document.getElementById("title").textContent=({overview:"Painel comercial",inbox:"Atendimento simulado",knowledge:"Conhecimento do agente"})[b.dataset.page]});
+document.getElementById("reset").onclick=()=>{deals=original.map(x=>({...x}));msgs=seedMessages.map(x=>({...x}));render()};
+document.getElementById("send").onclick=()=>{const i=document.getElementById("reply");if(!i.value.trim())return;msgs.push({who:selected,out:true,msg:i.value.trim()});i.value="";render()};
+document.getElementById("reply").onkeydown=e=>{if(e.key==="Enter")document.getElementById("send").click()};
+const kb=document.getElementById("kb");knowledge.forEach(([title,desc])=>{const p=el("div","panel");p.append(el("b","",title),el("p","muted",desc));kb.append(p)});
+render();
+</script></body></html>
